@@ -38,7 +38,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * MySQLAdapter Destructor
+     * MySQLAdapter Destructor.
      */
     public function __destruct()
     {
@@ -50,28 +50,44 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Common SELECT from the database
+     * Common SELECT from a single table.
      */
     public function select()
     {
 
     }
 
+
+    /**
+    * Common INSERT in to a single table.
+    */
     public function insert()
     {
 
     }
 
+
+    /**
+    * Common UPDATE to a single table.
+    */
     public function update()
     {
 
     }
 
+
+    /**
+    * Common DELETE from a single table.
+    */
     public function delete()
     {
 
     }
 
+
+    /**
+    * Execute a raw query.
+    */
     public function query()
     {
 
@@ -79,18 +95,8 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
 // _____________________________________________________________________________________________________________ private
-
-
-    private function connect()
-    {
-
-    }
-
-    private function disconnect()
-    {
-
-    }
-
+    
+    
     private function transactionBegin()
     {
 

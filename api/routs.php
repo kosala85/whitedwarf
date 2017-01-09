@@ -2,4 +2,4 @@
 
 use Api\Controllers\HelloController;
 
-$app->get('/hello/{name}', HelloController::class . ':hello');
+$app->get('/hello/{name}', HelloController::class . ':index');
