@@ -11,8 +11,6 @@ class HelloController
 {
 	public function index(Request $request, Response $response)
 	{
-	    throw new \Exception("Error");
-
 		$hello = new HelloLogic();
 
         $data = $hello->getAllHello();
