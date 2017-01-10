@@ -34,5 +34,8 @@ $container['errorHandler'] = function ($container)
 // assign objects that are needed across the app to $GLOBALS (NOTE: use with responsibility)
 $GLOBALS['databaseAdapter'] = $container['databaseAdapter'];
 
+// add middleware (NOTE: Last-In-First-Out order)
+$app->add(new \Api\Middleware\TransformerMiddleware());
+
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');
