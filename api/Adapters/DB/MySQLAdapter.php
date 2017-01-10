@@ -55,12 +55,46 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Common SELECT from a single table.
      *
-     * @param $table
-     * @return string
+     * @param $strTable
+     * @param array $arrWhere
+     * @param array $arrOrder
+     * @param array $arrLimit
+     * @param array $arrColumns
+     * @return array
      */
-    public function select($table)
+    public function select($strTable,
+                           array $arrWhere = [['column_1', '=', 'value'],['column_2', '=', 'value', 'or']],
+                           array $arrOrder = [['column_1' => 'ASC'], ['column_2', 'DESC']],
+                           array $arrLimit = [],
+                           array $arrColumns = []
+    )
     {
-        return "Hello from MySQL " . $table;
+        $strColumns = empty($arrColumns) ? '*' : $this->generateColumns($arrColumns);
+        $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
+        $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
+        $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
+
+        $query = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
+
+        if(!is_null($strConditions))
+        {
+            $query .= ' WHERE ' . $strConditions;
+        }
+
+        if(!is_null($strOrder))
+        {
+            $query .= ' ORDER BY ' . $strOrder;
+        }
+
+        if(!is_null($strLimit))
+        {
+            $query .= ' LIMIT ' . $strLimit;
+        }
+
+        $statement = $this->handler->prepare($query);
+        $statement->execute();
+
+        return $statement->fetchAll();
     }
 
 
@@ -133,6 +167,50 @@ class MySQLAdapter extends DBAdapterAbstract
     private function transactionRollback()
     {
         $this->handler->rollBack();
+    }
+
+
+    /**
+     * Generate columns list.
+     *
+     * @param array $arrColumns
+     * @return string
+     */
+    private function generateColumns(array $arrColumns)
+    {
+        $strColumns = "";
+
+        foreach($arrColumns as $column)
+        {
+            $strColumns .= $column . ',';
+        }
+
+        // remove the trailing comma and return
+        return rtrim($strColumns, ',');
+    }
+
+
+    private function generateWhereClause(array $arrWhere)
+    {
+
+    }
+
+
+    private function generateOrdering(array $arrOrder)
+    {
+
+    }
+
+
+    /**
+     * Generate query limit boundaries.
+     *
+     * @param array $arrLimit
+     * @return string
+     */
+    private function generateLimit(array $arrLimit)
+    {
+        return $arrLimit[0] . ', ' . $arrLimit[1];
     }
 
 }
