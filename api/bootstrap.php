@@ -12,12 +12,14 @@ $app = new \Slim\App($settings);
 // get the container of the app
 $container = $app->getContainer();
 
-$container['db'] = function($container)
+// add the database adapter to the container
+$container['databaseAdapter'] = function($container)
 {
   return new \Api\Adapters\DB\MySQLAdapter($container->get('settings')['db']);
 };
 
-//$container['errorHandler'] = function ($container)
+//// add error handler to the container
+//$container['errorHandler'] = function($container)
 //{
 //    return function ($request, $response, $exception) use ($container)
 //    {
@@ -27,12 +29,8 @@ $container['db'] = function($container)
 //    };
 //};
 
-//// add a class instance to the container
-//$container['HelloController'] = function()
-//{
-//  return new \Api\Controllers\HelloController;
-//};
-
+// assign objects that are needed across the app to $GLOBALS (NOTE: use with responsibility)
+$GLOBALS['databaseAdapter'] = $container['databaseAdapter'];
 
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');

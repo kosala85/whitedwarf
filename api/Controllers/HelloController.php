@@ -13,7 +13,7 @@ class HelloController
 	{
 		$hello = new HelloLogic();
 
-		return $hello->getAllHello();
+        $response->getBody()->write(json_encode($hello->getAllHello()));
 	}
 
 }

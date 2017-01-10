@@ -12,6 +12,7 @@ abstract class DBAdapterAbstract
 
     /**
      * DBAdapterAbstract constructor.
+     *
      * @param $config
      */
     public function __construct($config)
