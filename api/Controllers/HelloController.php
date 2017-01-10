@@ -11,9 +11,13 @@ class HelloController
 {
 	public function index(Request $request, Response $response)
 	{
+	    throw new \Exception("Error");
+
 		$hello = new HelloLogic();
 
-        $response->getBody()->write(json_encode($hello->getAllHello()));
+        $data = $hello->getAllHello();
+
+        return $response->withJson($data, 201);
 	}
 
 }
