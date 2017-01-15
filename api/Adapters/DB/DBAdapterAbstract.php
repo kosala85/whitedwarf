@@ -4,23 +4,23 @@ namespace Api\Adapters\DB;
 
 abstract class DBAdapterAbstract
 {
-    protected $host;
-    protected $user;
-    protected $password;
-    protected $schema;
+    protected $strHost;
+    protected $strUser;
+    protected $strPassword;
+    protected $strSchema;
 
 
     /**
      * DBAdapterAbstract constructor.
      *
-     * @param $config
+     * @param $arrConfig
      */
-    public function __construct($config)
+    public function __construct($arrConfig)
     {
-        $this->host = $config['host'];
-        $this->user = $config['user'];
-        $this->password = $config['password'];
-        $this->schema = $config['schema'];
+        $this->strHost = $arrConfig['host'];
+        $this->strUser = $arrConfig['user'];
+        $this->strPassword = $arrConfig['password'];
+        $this->strSchema = $arrConfig['schema'];
     }
 
 }

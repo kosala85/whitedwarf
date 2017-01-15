@@ -3,6 +3,7 @@
 namespace Api\Adapters\DB;
 
 use \PDO;
+use \PDOException;
 
 class MySQLAdapter extends DBAdapterAbstract
 {
@@ -17,15 +18,15 @@ class MySQLAdapter extends DBAdapterAbstract
      *
      * @param $config
      */
-    public function __construct($arrConfig)
+    public function __construct($config)
     {
-        parent::__construct($arrConfig);
+        parent::__construct($config);
 
         // create the connection string
-        $connectionString = "mysql:host={$this->strHost};dbname={$this->strSchema}";
+        $connectionString = "mysql:host={$this->host};dbname={$this->schema}";
 
         // create the db handler
-        $this->handler = new PDO($connectionString, $this->strUser, $this->strPassword);
+        $this->handler = new PDO($connectionString, $this->user, $this->password);
 
         $this->handler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->handler->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -60,7 +61,6 @@ class MySQLAdapter extends DBAdapterAbstract
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
-        $arrValues = null;
 
         $query = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
 
@@ -80,14 +80,7 @@ class MySQLAdapter extends DBAdapterAbstract
         }
 
         $statement = $this->handler->prepare($query);
-
-        // @TODO: merge all value arrays in to a single associative array
-        $arrValues[0] = $arrWhere;
-        $arrValues[1] = $arrOrder;
-        $arrValues[2] = $arrLimit;
-
-        $arrValues = $this->generateValuesArray($arrValues);
-        $statement->execute($arrValues);
+        $statement->execute();
 
         return $statement->fetchAll();
     }
@@ -124,9 +117,9 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
     * Common UPDATE to a single table.
     * $arrColumns ['column_1', 'column_2', ...]
-    * $arrValues [value_1, value_2, ...]
+    * $arrValues [[value_1, value_2, ...], [value_1, value_2, ...]]
     */
-    public function update($strTable, array $arrWhere, array $arrColumns = [], array $arrValues = [])
+    public function update($strTable, array $arrColumns = [], array $arrValues = [], array $arrWhere = [])
     {
         $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
@@ -148,9 +141,10 @@ class MySQLAdapter extends DBAdapterAbstract
 
         $statement = $this->handler->prepare($query);
 
-        $statement->execute($arrValues);
-        
-        // return affected raw count
+        foreach($arrValues as $arrRow)
+        {
+            $statement->execute($arrRow);
+        }
     }
 
 
@@ -172,8 +166,6 @@ class MySQLAdapter extends DBAdapterAbstract
         $statement = $this->handler->prepare($query);
 
         $statement->execute();
-
-        // return affected raw count
     }
 
 
@@ -185,12 +177,6 @@ class MySQLAdapter extends DBAdapterAbstract
         $statement = $this->handler->prepare($strQuery);
 
         return $statement->execute($arrValues);
-
-        // check query type
-
-        // if select return all results as an associative array
-
-        // if insert, update or delete return affected raws
     }
 
 
@@ -269,7 +255,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
                 foreach($arrCondition[2] as $arrInValue)
                 {
-                    $strTemp .= ':' . $arrInValue . ','; // @TODO: need to generate a unique key value for the placeholder
+                    $strTemp .= $arrInValue . ',';
                 }
 
                 $strTemp = rtrim($strTemp, ',');
@@ -278,11 +264,12 @@ class MySQLAdapter extends DBAdapterAbstract
             }
             elseif($arrCondition[1] == 'BETWEEN')
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $arrCondition[0] . ', :to' . $arrCondition[0]; // set placeholder
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' ' . $arrCondition[2][0] . ', ' . $arrCondition[2][1];
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' ' . $arrCondition[2][0] . ', ' . $arrCondition[2][1];
             }
             else
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $arrCondition[0]; // set placeholder
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' ' . $arrCondition[2];
             }
             
             // trim leading ' AND '
@@ -312,13 +299,12 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate query limit boundaries.
      *
-     * @param array $arrLimit ['offset' => offset, 'limit' => limit]
+     * @param array $arrLimit
      * @return string
      */
     private function generateLimit(array $arrLimit)
     {
-        // set array keys as placeholders
-        return ':' . $arrLimit[0] . ', :' . $arrLimit[1];
+        return $arrLimit[0] . ', ' . $arrLimit[1];
     }
 
 }
