@@ -92,7 +92,6 @@ class MySQLAdapter extends DBAdapterAbstract
         // @TODO: merge all value arrays in to a single associative array
         $arrValues[0] = $arrWhere;
         $arrValues[1] = $arrOrder;
-        $arrValues[2] = $arrLimit;
 
         $arrValues = $this->generateValuesArray($arrValues);
 
