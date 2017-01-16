@@ -8,7 +8,7 @@ class HelloRepository extends RepositoryAbstract
 {
 	public function selectAll()
 	{
-		return $this->adapter->query('SELECT * FROM people');
+		return $this->adapter->query('SELECT * FROM people', []);
 	}
 
 

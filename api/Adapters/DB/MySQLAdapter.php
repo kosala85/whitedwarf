@@ -6,6 +6,11 @@ use \PDO;
 
 class MySQLAdapter extends DBAdapterAbstract
 {
+    const QUERY_TYPE_SELECT = 'S';
+    const QUERY_TYPE_INSERT = 'I';
+    const QUERY_TYPE_UPDATE = 'U';
+    const QUERY_TYPE_DELETE = 'D';
+
     protected $handler = null;
 
 
@@ -15,7 +20,7 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * MySQLAdapter constructor.
      *
-     * @param $config
+     * @param $arrConfig
      */
     public function __construct($arrConfig)
     {
@@ -178,19 +183,27 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-    * Execute a raw query.
-    */
+     * Execute a raw query.
+     *
+     * @param $strQuery
+     * @param $arrValues
+     * @return array
+     */
     public function query($strQuery, $arrValues)
     {
         $statement = $this->handler->prepare($strQuery);
 
-        return $statement->execute($arrValues);
+        $statement->execute($arrValues);
 
         // check query type
+        if(strtoupper(substr(ltrim($strQuery), 0, 1)) === self::QUERY_TYPE_SELECT)
+        {
+            // if SELECT return all results as an associative array
+            return $statement->fetchAll();
+        }
 
-        // if select return all results as an associative array
-
-        // if insert, update or delete return affected raws
+        // if INSERT, UPDATE or DELETE return affected rows
+        return ['affected_rows' => $statement->rowCount()];
     }
 
 
