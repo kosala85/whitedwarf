@@ -51,12 +51,14 @@ class MySQLAdapter extends DBAdapterAbstract
 
     /**
      * Common SELECT from a single table.
+     *      (NOTE: Use this for simple queries)
      *
      * @param $strTable
-     * @param array $arrWhere
-     * @param array $arrOrder
-     * @param array $arrLimit
-     * @param array $arrColumns
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param array $arrOrder [['column_1' => 'ASC'], ['column_2', 'DESC']]
+     * @param array $arrLimit [offset, limit]
+     * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
      */
     public function select($strTable, array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
@@ -67,24 +69,25 @@ class MySQLAdapter extends DBAdapterAbstract
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
         $arrValues = null;
 
-        $query = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
+        $strQuery = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
 
         if(!is_null($strConditions))
         {
-            $query .= ' WHERE ' . $strConditions;
+            $strQuery .= $strConditions;
         }
 
         if(!is_null($strOrder))
         {
-            $query .= ' ORDER BY ' . $strOrder;
+            $strQuery .= $strOrder;
         }
 
         if(!is_null($strLimit))
         {
-            $query .= ' LIMIT ' . $strLimit;
+            $strQuery .= $strLimit;
         }
 
-        $statement = $this->handler->prepare($query);
+        echo $strQuery;
+        die;
 
         // @TODO: merge all value arrays in to a single associative array
         $arrValues[0] = $arrWhere;
@@ -92,9 +95,8 @@ class MySQLAdapter extends DBAdapterAbstract
         $arrValues[2] = $arrLimit;
 
         $arrValues = $this->generateValuesArray($arrValues);
-        $statement->execute($arrValues);
 
-        return $statement->fetchAll();
+        return $this->query($strQuery, $arrValues);
     }
 
 
@@ -127,10 +129,13 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-    * Common UPDATE to a single table.
-    * $arrColumns ['column_1', 'column_2', ...]
-    * $arrValues [value_1, value_2, ...]
-    */
+     * Common UPDATE to a single table.
+     *
+     * @param $strTable
+     * @param array $arrWhere
+     * @param array $arrColumns ['column_1', 'column_2', ...]
+     * @param array $arrValues [value_1, value_2, ...]
+     */
     public function update($strTable, array $arrWhere, array $arrColumns = [], array $arrValues = [])
     {
         $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
@@ -160,9 +165,12 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-    * Common DELETE from a single table.
-    */
-    public function delete($strTable, $arrWhere)
+     * Common DELETE from a single table.
+     *
+     * @param $strTable
+     * @param $arrWhere
+     */
+    public function delete($strTable, array $arrWhere)
     {
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strPlaceholders = '';
@@ -191,29 +199,26 @@ class MySQLAdapter extends DBAdapterAbstract
      */
     public function query($strQuery, $arrValues)
     {
-        $statement = $this->handler->prepare($strQuery);
+        $pdoStatement = $this->handler->prepare($strQuery);
 
-        $statement->execute($arrValues);
+        $pdoStatement->execute($arrValues);
 
         // check query type
         if(strtoupper(substr(ltrim($strQuery), 0, 1)) === self::QUERY_TYPE_SELECT)
         {
             // if SELECT return all results as an associative array
-            return $statement->fetchAll();
+            return $pdoStatement->fetchAll();
         }
 
         // if INSERT, UPDATE or DELETE return affected rows
-        return ['affected_rows' => $statement->rowCount()];
+        return ['affected_rows' => $pdoStatement->rowCount()];
     }
-
-
-// _____________________________________________________________________________________________________________ private
 
 
     /**
      * Begin a transaction.
      */
-    private function transactionBegin()
+    public function transactionBegin()
     {
         // check already in a transaction and if not start the transaction
         if(!$this->handler->inTransaction())
@@ -226,7 +231,7 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Commit the transaction.
      */
-    private function transactionCommit()
+    public function transactionCommit()
     {
         $this->handler->commit();
     }
@@ -235,16 +240,19 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Rollback the transaction.
      */
-    private function transactionRollback()
+    public function transactionRollback()
     {
         $this->handler->rollBack();
     }
 
 
+// _____________________________________________________________________________________________________________ private
+
+
     /**
      * Generate columns list.
      *
-     * @param array $arrColumns
+     * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return string
      */
     private function generateColumns(array $arrColumns)
@@ -253,11 +261,11 @@ class MySQLAdapter extends DBAdapterAbstract
 
         foreach($arrColumns as $strColumn)
         {
-            $strColumns .= $strColumn . ',';
+            $strColumns .= $strColumn . ', ';
         }
 
         // remove the trailing comma and return
-        return rtrim($strColumns, ',');
+        return rtrim($strColumns, ', ');
     }
 
 
@@ -268,12 +276,12 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateWhereClause(array $arrWhere)
     {
         $strWhere = '';
-        $strTemp = ''; // holds IN values temporeraly
+        $strTemp = ''; // holds IN values temporarily
 
         foreach($arrWhere as $arrCondition)
         {
-            // if $arrCondition has a value at index 3 treat as an 'OR'
-            !is_null($arrCondition[3]) ? $strWhere .= ' AND ' : $strWhere .= ' OR ';
+            // if $arrCondition has a 'true' value at index 3 treat as an 'OR'
+            (isset($arrCondition[3]) && $arrCondition[3] === true) ? $strWhere .= ' OR ' : $strWhere .= ' AND ';
 
             if($arrCondition[1] == 'IN')
             {
@@ -282,27 +290,27 @@ class MySQLAdapter extends DBAdapterAbstract
 
                 foreach($arrCondition[2] as $arrInValue)
                 {
-                    $strTemp .= ':' . $arrInValue . ','; // @TODO: need to generate a unique key value for the placeholder
+                    $strTemp .= ':' . $arrCondition[0] . $arrInValue . ', ';
                 }
 
-                $strTemp = rtrim($strTemp, ',');
+                $strTemp = rtrim($strTemp, ', ');
 
                 $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' (' . $strTemp . ')';
             }
             elseif($arrCondition[1] == 'BETWEEN')
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $arrCondition[0] . ', :to' . $arrCondition[0]; // set placeholder
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $arrCondition[0] . ' AND :to' . $arrCondition[0]; // set placeholder
             }
             else
             {
                 $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $arrCondition[0]; // set placeholder
             }
-            
-            // trim leading ' AND '
-            $strWhere = ltrim($strWhere, ' AND ');
-            
-            return $strWhere;
         }
+
+        // trim leading ' AND '
+        $strWhere = ltrim($strWhere, ' AND ');
+
+        return ' WHERE ' . $strWhere;
     }
 
 
@@ -315,23 +323,28 @@ class MySQLAdapter extends DBAdapterAbstract
 
         foreach($arrOrder as $arrCriteria)
         {
-            $strOrder .= $arrCriteria[0] . ' ' . $arrCriteria[1] . ',';
+            $strOrder .= $arrCriteria[0] . ' ' . $arrCriteria[1] . ', ';
         }
 
-        return rtrim($strOrder, ',');
+        return ' ORDER BY ' . rtrim($strOrder, ', ');
     }
 
 
     /**
      * Generate query limit boundaries.
      *
-     * @param array $arrLimit ['offset' => offset, 'limit' => limit]
+     * @param array $arrLimit [offset, limit]
      * @return string
      */
     private function generateLimit(array $arrLimit)
     {
         // set array keys as placeholders
-        return ':' . $arrLimit[0] . ', :' . $arrLimit[1];
+        if(count($arrLimit) === 1)
+        {
+            return ' LIMIT :limit';
+        }
+
+        return ' LIMIT :offset, :limit';
     }
 
 }
