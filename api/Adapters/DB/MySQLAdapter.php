@@ -80,6 +80,7 @@ class MySQLAdapter extends DBAdapterAbstract
         if(!is_null($strConditions))
         {
             $strQuery .= $strConditions;
+            $arrValues['where'] = $arrWhere;
         }
 
         if(!is_null($strOrder))
@@ -90,16 +91,20 @@ class MySQLAdapter extends DBAdapterAbstract
         if(!is_null($strLimit))
         {
             $strQuery .= $strLimit;
+            $arrValues['limit'] = $arrLimit;
         }
 
-        echo $strQuery;
-        die;
+        $arrValues = $this->generateBindArray(self::QUERY_TYPE_SELECT, $arrValues);
 
-        // @TODO: merge all value arrays in to a single associative array
-        $arrValues[0] = $arrWhere;
-        $arrValues[1] = $arrOrder;
-
-        $arrValues = $this->generateValuesArray($arrValues);
+//        echo '<pre>';
+//        echo '<br>';
+//
+//        echo $strQuery;
+//        echo '<br>';
+//
+//        print_r($arrValues);
+//        echo '</pre>';
+//        die;
 
         return $this->query($strQuery, $arrValues);
     }
@@ -281,10 +286,13 @@ class MySQLAdapter extends DBAdapterAbstract
     }
 
 
-    /*
-    *   [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
-    *   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
-    */
+    /**
+     * Generate the WHERE clause
+     *
+     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @return string
+     */
     private function generateWhereClause(array $arrWhere)
     {
         $strWhere = '';
@@ -366,7 +374,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param $pdoStatement
      * @param $arrValues [':name_1' => value_1, ':name_2' => value_2, ...]
      */
-    private function bindValues($pdoStatement, $arrValues)
+    private function bindValues($pdoStatement, array $arrValues)
     {
         foreach($arrValues as $strKey => $mixValue)
         {
@@ -406,6 +414,146 @@ class MySQLAdapter extends DBAdapterAbstract
             default:
                 throw new \Exception("Unsupported data type");
         }
+    }
+
+
+    /**
+     * Generate the associative array containing placeholder to value mapping.
+     *
+     * @param $strQueryType
+     * @param $arrValues
+     * @return array
+     */
+    private function generateBindArray($strQueryType, array $arrValues)
+    {
+        $arrReturn = [];
+
+        if(is_null($arrValues))
+        {
+            return $arrReturn;
+        }
+
+        // generate array for SELECT
+        if($strQueryType === self::QUERY_TYPE_SELECT)
+        {
+            if(isset($arrValues['where']))
+            {
+                $arrReturn = array_merge($arrReturn, $this->generateWhereBindArray($arrValues['where']));
+            }
+
+            if(isset($arrValues['limit']))
+            {
+                $arrReturn = array_merge($arrReturn, $this->generateLimitBindArray($arrValues['limit']));
+            }
+        }
+
+        // generate array for INSERT
+        if($strQueryType === self::QUERY_TYPE_INSERT)
+        {
+            $arrReturn = array_merge($arrReturn, $this->generateValuesBindArray($arrValues['values']));
+        }
+
+        // generate array for UPDATE
+        if($strQueryType === self::QUERY_TYPE_UPDATE)
+        {
+            if(isset($arrValues['set']))
+            {
+                $arrReturn = array_merge($arrReturn, $this->generateSetBindArray($arrValues['set']));
+            }
+
+            if(isset($arrValues['where']))
+            {
+                $arrReturn = array_merge($arrReturn, $this->generateWhereBindArray($arrValues['where']));
+            }
+        }
+
+        // generate array for DELETE
+        if($strQueryType === self::QUERY_TYPE_DELETE)
+        {
+            if(isset($arrValues['where']))
+            {
+                $arrReturn = array_merge($arrReturn, $this->generateLimitBindArray($arrValues['where']));
+            }
+        }
+
+        return $arrReturn;
+    }
+
+
+    /**
+     * Generate bind array for where clause.
+     *
+     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @return array
+     */
+    private function generateWhereBindArray(array $arrWhere)
+    {
+        $arrReturn = [];
+
+        foreach($arrWhere as $arrCondition)
+        {
+            if($arrCondition[1] == 'IN')
+            {
+                foreach($arrCondition[2] as $arrInValue)
+                {
+                    $arrReturn[':' . $arrCondition[0] . $arrInValue] = $arrInValue;
+                }
+            }
+            elseif($arrCondition[1] == 'BETWEEN')
+            {
+                $arrReturn[':from' . $arrCondition[0]] = $arrCondition[2][0];
+                $arrReturn[':to' . $arrCondition[0]] = $arrCondition[2][1];
+            }
+            else
+            {
+                $arrReturn[':' . $arrCondition[0]] = $arrCondition[2];
+            }
+        }
+
+        return $arrReturn;
+    }
+
+
+    /**
+     * Generate bind array for limit clause.
+     *
+     * @param $arrLimit [offset, limit]
+     * @return array
+     */
+    private function generateLimitBindArray($arrLimit)
+    {
+        if(count($arrLimit) === 1)
+        {
+            return [':limit' => $arrLimit[0]];
+        }
+
+        return [
+            ':offset' => $arrLimit[0],
+            ':limit' => $arrLimit[1]
+        ];
+    }
+
+
+    /**
+     * Generate bind array for insert values.
+     *
+     * @param $arrValues
+     */
+    private function generateValuesBindArray($arrValues)
+    {
+
+    }
+
+
+    /**
+     * Generate bind array for update values.
+     *
+     * @param $arrSet
+     */
+    private function generateSetBindArray($arrSet)
+    {
+
     }
 
 }
