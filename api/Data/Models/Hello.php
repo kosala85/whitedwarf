@@ -4,7 +4,7 @@ namespace Api\Data\Models;
 
 class Hello
 {
-	const TABLE = 'people';
+	const TABLE = 'hello';
 
 	const STATUS_ACTIVE = 'A';
 	const STATUS_INACTIVE = 'D';

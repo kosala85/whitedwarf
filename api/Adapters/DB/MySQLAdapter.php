@@ -57,7 +57,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
     /**
      * Common SELECT from a single table.
-     *      (NOTE: Use this for simple queries)
+     *      (NOTE: Use this for simple to moderate queries)
      *
      * @param $strTable
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
@@ -96,16 +96,6 @@ class MySQLAdapter extends DBAdapterAbstract
 
         $arrValues = $this->generateBindArray(self::QUERY_TYPE_SELECT, $arrValues);
 
-//        echo '<pre>';
-//        echo '<br>';
-//
-//        echo $strQuery;
-//        echo '<br>';
-//
-//        print_r($arrValues);
-//        echo '</pre>';
-//        die;
-
         return $this->query($strQuery, $arrValues);
     }
 
@@ -116,11 +106,15 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param $strTable
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @param array $arrValues [[value_1, value_2, ...], [value_1, value_2, ...]]
+     * @return array
      */
-    public function insert($strTable, array $arrColumns = [], array $arrValues = [])
+    public function insert($strTable, array $arrColumns, array $arrValues)
     {
         $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
         $strPlaceholders = '';
+        $intAffectedRows = 0;
+        $arrInsertRow['columns'] = $arrColumns;
+        $arrInsertRow['values'] = null;
 
         foreach($arrColumns as $strColumn)
         {
@@ -129,14 +123,21 @@ class MySQLAdapter extends DBAdapterAbstract
 
         $strPlaceholders = rtrim($strPlaceholders, ',');
         
-        $query = 'INSERT INTO ' . $strTable . '(' . $strColumns . ')' . ' VALUES (' . $strPlaceholders . ')';
+        $strQuery = 'INSERT INTO ' . $strTable . '(' . $strColumns . ')' . ' VALUES (' . $strPlaceholders . ')';
 
-        $statement = $this->handler->prepare($query);
+        $pdoStatement = $this->handler->prepare($strQuery);
 
         foreach($arrValues as $arrRow)
         {
-            $statement->execute($arrRow);
+            $arrInsertRow['values'] = $arrRow;
+
+            $this->bindValues($pdoStatement, $this->generateBindArray(self::QUERY_TYPE_INSERT, $arrInsertRow));
+            $pdoStatement->execute();
+
+            $intAffectedRows++;
         }
+
+        return ['affected_rows' => $intAffectedRows];
     }
 
 
@@ -450,7 +451,7 @@ class MySQLAdapter extends DBAdapterAbstract
         // generate array for INSERT
         if($strQueryType === self::QUERY_TYPE_INSERT)
         {
-            $arrReturn = array_merge($arrReturn, $this->generateValuesBindArray($arrValues['values']));
+            return $this->generateValuesBindArray($arrValues['columns'], $arrValues['values']);
         }
 
         // generate array for UPDATE
@@ -538,11 +539,28 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate bind array for insert values.
      *
+     * @param $arrColumns
      * @param $arrValues
+     * @return array
+     * @throws \Exception
      */
-    private function generateValuesBindArray($arrValues)
+    private function generateValuesBindArray($arrColumns, $arrValues)
     {
+        $intColumnCount = count($arrColumns);
 
+        if($intColumnCount !== count($arrValues))
+        {
+            throw new \Exception("Column and Value array length mismatch");
+        }
+
+        $arrReturn = [];
+
+        for($i = 0; $i < $intColumnCount; $i++)
+        {
+            $arrReturn[':' . $arrColumns[$i]] = $arrValues[$i];
+        }
+
+        return $arrReturn;
     }
 
 
