@@ -28,8 +28,8 @@ class HelloRepository extends RepositoryAbstract
         ];
 
         $arrColumns = [
-            'id',
-            'col_1',
+//            'id',
+//            'col_1',
         ];
 
         return $this->adapter->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
@@ -51,6 +51,38 @@ class HelloRepository extends RepositoryAbstract
         ];
 
         return $this->adapter->insert(Hello::TABLE, $arrColumns, $arrValues);
+    }
+
+
+    public function updateHello()
+    {
+        $arrSet = [
+            'col_1' => 'update_11',
+            'col_2' => 'update_11',
+            'col_3' => 'update_11',
+        ];
+
+        $arrWhere = [
+        ['id', 'IN', [2, 4, 6]],
+//	        ['col_1', 'LIKE', 'sri lanka%'],
+//            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
+//            ['status', 'IN', [1, 2, 3, 4, 5]],
+        ];
+
+        return $this->adapter->update(Hello::TABLE, $arrSet, $arrWhere);
+    }
+
+
+    public function deleteHello()
+    {
+        $arrWhere = [
+        ['id', '=', 3],
+//	        ['col_1', 'LIKE', 'sri lanka%'],
+//            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
+//            ['status', 'IN', [1, 2, 3, 4, 5]],
+        ];
+
+        return $this->adapter->delete(Hello::TABLE, $arrWhere);
     }
 
 }

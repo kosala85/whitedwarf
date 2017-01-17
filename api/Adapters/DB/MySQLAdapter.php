@@ -145,35 +145,35 @@ class MySQLAdapter extends DBAdapterAbstract
      * Common UPDATE to a single table.
      *
      * @param $strTable
-     * @param array $arrWhere
-     * @param array $arrColumns ['column_1', 'column_2', ...]
-     * @param array $arrValues [value_1, value_2, ...]
+     * @param array $arrSet ['column_1' => value_1, 'column_2' => value_2, ...]
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @return array
      */
-    public function update($strTable, array $arrWhere, array $arrColumns = [], array $arrValues = [])
+    public function update($strTable, array $arrSet, array $arrWhere)
     {
-        $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strPlaceholders = '';
+        $arrValues['set'] = $arrSet;
+        $arrValues['where'] = $arrWhere;
 
-        foreach($arrColumns as $strColumn)
+        foreach($arrSet as $strKey => $mixValue)
         {
-            $strPlaceholders .= $strColumn . '= :' . $strColumn . ',';
+            $strPlaceholders .= $strKey . '= :' . $strKey . ', ';
         }
 
-        $strPlaceholders = rtrim($strPlaceholders, ',');
-        
-        $query = 'UPDATE ' . $strTable . ' SET ' . $strPlaceholders;
+        $strPlaceholders = rtrim($strPlaceholders, ', ');
+
+        $strQuery = 'UPDATE ' . $strTable . ' SET ' . $strPlaceholders;
 
         if(!is_null($strConditions))
         {
-            $query .= ' WHERE ' . $strConditions;
+            $strQuery .= $strConditions;
         }
 
-        $statement = $this->handler->prepare($query);
+        $arrValues = $this->generateBindArray(self::QUERY_TYPE_UPDATE, $arrValues);
 
-        $statement->execute($arrValues);
-        
-        // return affected raw count
+        return $this->query($strQuery, $arrValues);
     }
 
 
@@ -181,25 +181,27 @@ class MySQLAdapter extends DBAdapterAbstract
      * Common DELETE from a single table.
      *
      * @param $strTable
-     * @param $arrWhere
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @return array
+     * @throws \Exception
      */
     public function delete($strTable, array $arrWhere)
     {
-        $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
-        $strPlaceholders = '';
-
-        $query = 'DELETE FROM ' . $strTable;
-
-        if(!is_null($strConditions))
+        if(empty($arrWhere))
         {
-            $query .= ' WHERE ' . $strConditions;
+            throw new \Exception("Cannot delete with an empty WHERE condition");
         }
 
-        $statement = $this->handler->prepare($query);
+        $arrValues['where'] = $arrWhere;
 
-        $statement->execute();
+        $strConditions = $this->generateWhereClause($arrWhere);
 
-        // return affected raw count
+        $strQuery = 'DELETE FROM ' . $strTable . $strConditions;
+
+        $arrValues = $this->generateBindArray(self::QUERY_TYPE_DELETE, $arrValues);
+
+        return $this->query($strQuery, $arrValues);
     }
 
 
@@ -207,7 +209,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * Execute a raw query with placeholders.
      *
      * @param $strQuery
-     * @param $arrValues
+     * @param $arrValues [':name_1' => value_1, ':name_2' => value_2, ...]
      * @return array
      */
     public function query($strQuery, $arrValues = [])
@@ -335,9 +337,12 @@ class MySQLAdapter extends DBAdapterAbstract
     }
 
 
-    /*
-    *   [['column_1' => 'ASC'], ['column_2', 'DESC']]
-    */
+    /**
+     * Generate resultset ordering.
+     *
+     * @param array $arrOrder [['column_1' => 'ASC'], ['column_2', 'DESC']]
+     * @return string
+     */
     private function generateOrdering(array $arrOrder)
     {
         $strOrder = '';
@@ -391,7 +396,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * @return int
      * @throws \Exception
      */
-    public function getPDODataType($mixValue)
+    private function getPDODataType($mixValue)
     {
         $dataType = gettype($mixValue);
 
@@ -422,7 +427,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * Generate the associative array containing placeholder to value mapping.
      *
      * @param $strQueryType
-     * @param $arrValues
+     * @param $arrValues ['where' => [], 'limit' => [], 'columns' => [], 'values' => [], 'set' => []]
      * @return array
      */
     private function generateBindArray($strQueryType, array $arrValues)
@@ -439,7 +444,7 @@ class MySQLAdapter extends DBAdapterAbstract
         {
             if(isset($arrValues['where']))
             {
-                $arrReturn = array_merge($arrReturn, $this->generateWhereBindArray($arrValues['where']));
+                $arrReturn = $this->generateWhereBindArray($arrValues['where']);
             }
 
             if(isset($arrValues['limit']))
@@ -459,7 +464,7 @@ class MySQLAdapter extends DBAdapterAbstract
         {
             if(isset($arrValues['set']))
             {
-                $arrReturn = array_merge($arrReturn, $this->generateSetBindArray($arrValues['set']));
+                $arrReturn = $this->generateSetBindArray($arrValues['set']);
             }
 
             if(isset($arrValues['where']))
@@ -471,10 +476,7 @@ class MySQLAdapter extends DBAdapterAbstract
         // generate array for DELETE
         if($strQueryType === self::QUERY_TYPE_DELETE)
         {
-            if(isset($arrValues['where']))
-            {
-                $arrReturn = array_merge($arrReturn, $this->generateLimitBindArray($arrValues['where']));
-            }
+            return $this->generateWhereBindArray($arrValues['where']);
         }
 
         return $arrReturn;
@@ -539,8 +541,8 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate bind array for insert values.
      *
-     * @param $arrColumns
-     * @param $arrValues
+     * @param $arrColumns ['column_1', 'column_2', ...]
+     * @param $arrValues [value_1, value_2, ...]
      * @return array
      * @throws \Exception
      */
@@ -567,11 +569,19 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate bind array for update values.
      *
-     * @param $arrSet
+     * @param $arrSet ['column_1' => value_1, 'column_2' => value_2, ...]
+     * @return array
      */
     private function generateSetBindArray($arrSet)
     {
+        $arrReturn = [];
 
+        foreach($arrSet as $strKey => $mixValue)
+        {
+            $arrReturn[':' . $strKey] = $mixValue;
+        }
+
+        return $arrReturn;
     }
 
 }
