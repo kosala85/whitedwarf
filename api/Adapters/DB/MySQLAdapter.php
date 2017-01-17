@@ -11,6 +11,12 @@ class MySQLAdapter extends DBAdapterAbstract
     const QUERY_TYPE_UPDATE = 'U';
     const QUERY_TYPE_DELETE = 'D';
 
+    const DATA_TYPE_STRING = 'string';
+    const DATA_TYPE_INTEGER = 'integer';
+    const DATA_TYPE_DOUBLE = 'double';
+    const DATA_TYPE_BOOLEAN = 'boolean';
+    const DATA_TYPE_NULL = 'NULL';
+
     protected $handler = null;
 
 
@@ -27,7 +33,7 @@ class MySQLAdapter extends DBAdapterAbstract
         parent::__construct($arrConfig);
 
         // create the connection string
-        $connectionString = "mysql:host={$this->strHost};dbname={$this->strSchema}";
+        $connectionString = "mysql:host={$this->strHost};dbname={$this->strSchema};charset=utf8";
 
         // create the db handler
         $this->handler = new PDO($connectionString, $this->strUser, $this->strPassword);
@@ -100,10 +106,12 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-    * Common INSERT in to a single table.
-    * $arrColumns ['column_1', 'column_2', ...]
-    * $arrValues [[value_1, value_2, ...], [value_1, value_2, ...]]
-    */
+     * Common INSERT in to a single table.
+     *
+     * @param $strTable
+     * @param array $arrColumns ['column_1', 'column_2', ...]
+     * @param array $arrValues [[value_1, value_2, ...], [value_1, value_2, ...]]
+     */
     public function insert($strTable, array $arrColumns = [], array $arrValues = [])
     {
         $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
@@ -190,17 +198,22 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Execute a raw query.
+     * Execute a raw query with placeholders.
      *
      * @param $strQuery
      * @param $arrValues
      * @return array
      */
-    public function query($strQuery, $arrValues)
+    public function query($strQuery, $arrValues = [])
     {
         $pdoStatement = $this->handler->prepare($strQuery);
 
-        $pdoStatement->execute($arrValues);
+        if(!empty($arrValues))
+        {
+            $this->bindValues($pdoStatement, $arrValues);
+        }
+
+        $pdoStatement->execute();
 
         // check query type
         if(strtoupper(substr(ltrim($strQuery), 0, 1)) === self::QUERY_TYPE_SELECT)
@@ -344,6 +357,55 @@ class MySQLAdapter extends DBAdapterAbstract
         }
 
         return ' LIMIT :offset, :limit';
+    }
+
+
+    /**
+     * Bind values to the statement with data type.
+     *
+     * @param $pdoStatement
+     * @param $arrValues [':name_1' => value_1, ':name_2' => value_2, ...]
+     */
+    private function bindValues($pdoStatement, $arrValues)
+    {
+        foreach($arrValues as $strKey => $mixValue)
+        {
+            $pdoStatement->bindValue($strKey, $mixValue, $this->getPDODataType($mixValue));
+        }
+    }
+
+
+    /**
+     * Get PDO data type representation for the variable.
+     *
+     * @param $mixValue
+     * @return int
+     * @throws \Exception
+     */
+    public function getPDODataType($mixValue)
+    {
+        $dataType = gettype($mixValue);
+
+        switch($dataType)
+        {
+            case self::DATA_TYPE_STRING:
+                return PDO::PARAM_STR;
+
+            case self::DATA_TYPE_INTEGER:
+                return PDO::PARAM_INT;
+
+            case self::DATA_TYPE_DOUBLE:
+                return PDO::PARAM_STR;
+
+            case self::DATA_TYPE_BOOLEAN:
+                return PDO::PARAM_BOOL;
+
+            case self::DATA_TYPE_NULL:
+                return PDO::PARAM_NULL;
+
+            default:
+                throw new \Exception("Unsupported data type");
+        }
     }
 
 }
