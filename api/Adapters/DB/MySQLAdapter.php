@@ -19,6 +19,9 @@ class MySQLAdapter extends DBAdapterAbstract
 
     protected $handler = null;
 
+    // track nested transactions
+    private $transactionCounter = 0;
+
 
 // _______________________________________________________________________________________________________ magic methods
 
@@ -262,6 +265,9 @@ class MySQLAdapter extends DBAdapterAbstract
         {
             $this->handler->beginTransaction();
         }
+
+        // increment transaction counter
+        $this->transactionCounter++;
     }
 
 
@@ -270,7 +276,13 @@ class MySQLAdapter extends DBAdapterAbstract
      */
     public function transactionCommit()
     {
-        $this->handler->commit();
+        // decrement the transaction counter
+        $this->transactionCounter--;
+
+        if($this->transactionCounter === 0)
+        {
+            $this->handler->commit();
+        }
     }
 
 
@@ -279,7 +291,16 @@ class MySQLAdapter extends DBAdapterAbstract
      */
     public function transactionRollback()
     {
-        $this->handler->rollBack();
+         // @TODO: The rollback works fine even without checking for inTransaction. But if this check was not done
+         //        before rolling back a 'no active transaction' error is thrown. Need to find out why.
+
+        if($this->handler->inTransaction())
+        {
+            $this->handler->rollBack();
+        }
+
+        // reset transaction counter
+        $this->transactionCounter = 0;
     }
 
 

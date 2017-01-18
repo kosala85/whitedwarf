@@ -8,7 +8,7 @@ class HelloRepository extends RepositoryAbstract
 {
     // @TODO: need to find out about naming conventions used in each layer.
 
-	public function selectAll()
+	public function selectAll_()
 	{
 	    $arrWhere = [
 //	        ['id', '!=', 1],
@@ -48,8 +48,11 @@ class HelloRepository extends RepositoryAbstract
     }
 
 
-    public function createMultipleHello()
+//    public function createMultipleHello()
+    public function selectAll()
     {
+        $test = new TestRepository();
+
         $arrColumns = [
             'col_1',
             'col_2',
@@ -62,39 +65,88 @@ class HelloRepository extends RepositoryAbstract
             ['val_21', 'val_22', null],
         ];
 
-        return $this->adapter->insertBulk(Hello::TABLE, $arrColumns, $arrValues);
+        $this->adapter->transactionBegin();
+
+        try
+        {
+            $result = $this->adapter->insertBulk(Hello::TABLE, $arrColumns, $arrValues);
+
+            $test->updateHello();
+
+            $test->deleteHello();
+
+            $this->adapter->transactionCommit();
+
+            return $result;
+        }
+        catch(\Exception $e)
+        {
+            $this->adapter->transactionRollback();
+
+            throw $e;
+        }
     }
 
 
     public function updateHello()
     {
         $arrSet = [
-            'col_1' => 'update_11',
-            'col_2' => 'update_11',
-            'col_3' => 'update_11',
+            'col_1' => 'updated_again2',
+            'col_2' => 'updated_again2',
+            'col_3' => 'updated_again2',
         ];
 
         $arrWhere = [
-        ['id', 'IN', [2, 4, 6]],
+        ['id', 'IN', [1, 2]],
 //	        ['col_1', 'LIKE', 'sri lanka%'],
 //            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
 //            ['status', 'IN', [1, 2, 3, 4, 5]],
         ];
 
-        return $this->adapter->update(Hello::TABLE, $arrSet, $arrWhere);
+        $this->adapter->transactionBegin();
+
+        try
+        {
+            $result = $this->adapter->update(Hello::TABLE, $arrSet, $arrWhere);
+
+            $this->adapter->transactionCommit();
+
+            return $result;
+        }
+        catch(\Exception $e)
+        {
+            $this->adapter->transactionRollback();
+
+            throw $e;
+        }
     }
 
 
     public function deleteHello()
     {
         $arrWhere = [
-        ['id', '=', 3],
+        ['id', '=', 5],
 //	        ['col_1', 'LIKE', 'sri lanka%'],
 //            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
 //            ['status', 'IN', [1, 2, 3, 4, 5]],
         ];
 
-        return $this->adapter->delete(Hello::TABLE, $arrWhere);
+        $this->adapter->transactionBegin();
+
+        try
+        {
+            $result = $this->adapter->delete(Hello::TABLE, $arrWhere);
+
+            $this->adapter->transactionCommit();
+
+            return $result;
+        }
+        catch(\Exception $e)
+        {
+            $this->adapter->transactionRollback();
+
+            throw $e;
+        }
     }
 
 }
