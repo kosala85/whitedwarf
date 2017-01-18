@@ -56,7 +56,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Common SELECT from a single table.
+     * SELECT from a table.
      *      (NOTE: Use this for simple to moderate queries)
      *
      * @param $strTable
@@ -101,14 +101,30 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Common INSERT in to a single table.
+     * INSERT a single record in to a table.
+     *
+     * @param $strTable
+     * @param array $arrRecord ['column_1' = > value_1, 'column_2' => value_2, ...]
+     * @return array
+     */
+    public function insert($strTable, array $arrRecord)
+    {
+        $arrColumns = array_keys($arrRecord);
+        $arrValues[0] = array_values($arrRecord);
+
+        return $this->insertBulk($strTable, $arrColumns, $arrValues);
+    }
+
+
+    /**
+     * INSERT multiple records in to a table.
      *
      * @param $strTable
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @param array $arrValues [[value_1, value_2, ...], [value_1, value_2, ...]]
      * @return array
      */
-    public function insert($strTable, array $arrColumns, array $arrValues)
+    public function insertBulk($strTable, array $arrColumns, array $arrValues)
     {
         $strColumns = empty($arrColumns) ? '' : $this->generateColumns($arrColumns);
         $strPlaceholders = '';
@@ -122,7 +138,7 @@ class MySQLAdapter extends DBAdapterAbstract
         }
 
         $strPlaceholders = rtrim($strPlaceholders, ',');
-        
+
         $strQuery = 'INSERT INTO ' . $strTable . '(' . $strColumns . ')' . ' VALUES (' . $strPlaceholders . ')';
 
         $pdoStatement = $this->handler->prepare($strQuery);
@@ -142,7 +158,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Common UPDATE to a single table.
+     * UPDATE records in a table.
      *
      * @param $strTable
      * @param array $arrSet ['column_1' => value_1, 'column_2' => value_2, ...]
@@ -178,7 +194,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Common DELETE from a single table.
+     * DELETE records from a table.
      *
      * @param $strTable
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
@@ -206,7 +222,8 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Execute a raw query with placeholders.
+     * Execute a raw query.
+     *      (NOTE: use this to execute complex queries, and make sure to use placeholders for all variables)
      *
      * @param $strQuery
      * @param $arrValues [':name_1' => value_1, ':name_2' => value_2, ...]

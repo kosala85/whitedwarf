@@ -28,8 +28,8 @@ class HelloRepository extends RepositoryAbstract
         ];
 
         $arrColumns = [
-//            'id',
-//            'col_1',
+            'id AS identifier',
+            'col_1 AS column_1',
         ];
 
         return $this->adapter->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
@@ -37,6 +37,18 @@ class HelloRepository extends RepositoryAbstract
 
 
     public function createHello()
+    {
+        $arrRecord = [
+            'col_1' => 'value_1',
+            'col_2' => 'value_2',
+            'col_3' => 'value_3',
+        ];
+
+        return $this->adapter->insert(Hello::TABLE, $arrRecord);
+    }
+
+
+    public function createMultipleHello()
     {
         $arrColumns = [
             'col_1',
@@ -50,7 +62,7 @@ class HelloRepository extends RepositoryAbstract
             ['val_21', 'val_22', null],
         ];
 
-        return $this->adapter->insert(Hello::TABLE, $arrColumns, $arrValues);
+        return $this->adapter->insertBulk(Hello::TABLE, $arrColumns, $arrValues);
     }
 
 
