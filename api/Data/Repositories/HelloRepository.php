@@ -32,7 +32,7 @@ class HelloRepository extends RepositoryAbstract
             'col_1 AS column_1',
         ];
 
-        return $this->adapter->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
+        return $this->db->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
 	}
 
 
@@ -44,15 +44,13 @@ class HelloRepository extends RepositoryAbstract
             'col_3' => 'value_3',
         ];
 
-        return $this->adapter->insert(Hello::TABLE, $arrRecord);
+        return $this->db->insert(Hello::TABLE, $arrRecord);
     }
 
 
 //    public function createMultipleHello()
     public function selectAll()
     {
-        $test = new TestRepository();
-
         $arrColumns = [
             'col_1',
             'col_2',
@@ -65,23 +63,19 @@ class HelloRepository extends RepositoryAbstract
             ['val_21', 'val_22', null],
         ];
 
-        $this->adapter->transactionBegin();
+        $this->db->transBegin();
 
         try
         {
-            $result = $this->adapter->insertBulk(Hello::TABLE, $arrColumns, $arrValues);
+            $result = $this->db->insertBulk(Hello::TABLE, $arrColumns, $arrValues);
 
-            $test->updateHello();
-
-            $test->deleteHello();
-
-            $this->adapter->transactionCommit();
+            $this->db->transCommit();
 
             return $result;
         }
         catch(\Exception $e)
         {
-            $this->adapter->transactionRollback();
+            $this->db->transRollback();
 
             throw $e;
         }
@@ -103,19 +97,19 @@ class HelloRepository extends RepositoryAbstract
 //            ['status', 'IN', [1, 2, 3, 4, 5]],
         ];
 
-        $this->adapter->transactionBegin();
+        $this->db->transBegin();
 
         try
         {
-            $result = $this->adapter->update(Hello::TABLE, $arrSet, $arrWhere);
+            $result = $this->db->update(Hello::TABLE, $arrSet, $arrWhere);
 
-            $this->adapter->transactionCommit();
+            $this->db->transCommit();
 
             return $result;
         }
         catch(\Exception $e)
         {
-            $this->adapter->transactionRollback();
+            $this->db->transRollback();
 
             throw $e;
         }
@@ -131,19 +125,19 @@ class HelloRepository extends RepositoryAbstract
 //            ['status', 'IN', [1, 2, 3, 4, 5]],
         ];
 
-        $this->adapter->transactionBegin();
+        $this->db->transBegin();
 
         try
         {
-            $result = $this->adapter->delete(Hello::TABLE, $arrWhere);
+            $result = $this->db->delete(Hello::TABLE, $arrWhere);
 
-            $this->adapter->transactionCommit();
+            $this->db->transCommit();
 
             return $result;
         }
         catch(\Exception $e)
         {
-            $this->adapter->transactionRollback();
+            $this->db->transRollback();
 
             throw $e;
         }

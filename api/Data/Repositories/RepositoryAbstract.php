@@ -8,7 +8,7 @@ abstract class RepositoryAbstract
 
 	public function __construct()
 	{
-		$this->adapter = $GLOBALS['databaseAdapter'];
+		$this->db = $GLOBALS['databaseAdapter'];
 	}
 
 

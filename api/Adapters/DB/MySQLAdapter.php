@@ -258,7 +258,7 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Begin a transaction.
      */
-    public function transactionBegin()
+    public function transBegin()
     {
         // check already in a transaction and if not start the transaction
         if(!$this->handler->inTransaction())
@@ -274,7 +274,7 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Commit the transaction.
      */
-    public function transactionCommit()
+    public function transCommit()
     {
         // decrement the transaction counter
         $this->transactionCounter--;
@@ -289,7 +289,7 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Rollback the transaction.
      */
-    public function transactionRollback()
+    public function transRollback()
     {
          // @TODO: The rollback works fine even without checking for inTransaction. But if this check was not done
          //        before rolling back a 'no active transaction' error is thrown. Need to find out why.
