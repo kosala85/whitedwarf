@@ -2,10 +2,12 @@
 
 namespace Api\Middleware;
 
-class TransformerMiddleware
+class JsonMiddleware
 {
     /**
-     * Transformer middleware invokable class
+     * Json middleware invokable class.
+     *
+     *  Checks whether JSON data is sent to the API and make sure the header is set to 'applicatio/json' in the response.
      *
      * @param  \Psr\Http\Message\ServerRequestInterface $request PSR7 request
      * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response

@@ -26,8 +26,8 @@ $container['errorHandler'] = function ($container)
         //Format of exception to return
         $data = (new \Api\Exceptions\ExceptionHandler($exception))->handle();
 
-        return $response->withJson($data, 500)
-                         ->withHeader('Content-Type', 'application/json');
+        return $response->withJson($data, 500);
+//                        ->withHeader('Content-Type', 'application/json');
     };
 };
 
@@ -35,7 +35,7 @@ $container['errorHandler'] = function ($container)
 $GLOBALS['databaseAdapter'] = $container['databaseAdapter'];
 
 // add middleware (NOTE: Last-In-First-Out order)
-$app->add(new \Api\Middleware\TransformerMiddleware());
+$app->add(new \Api\Middleware\JsonMiddleware());
 
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');
