@@ -27,12 +27,11 @@ $container['errorHandler'] = function ($container)
         $data = (new \Api\Exceptions\ExceptionHandler($exception))->handle();
 
         return $response->withJson($data, 500);
-//                        ->withHeader('Content-Type', 'application/json');
     };
 };
 
 // assign objects that are needed across the app to $GLOBALS (NOTE: use with responsibility)
-$GLOBALS['databaseAdapter'] = $container['databaseAdapter'];
+$GLOBALS['db'] = $container['databaseAdapter'];
 
 // add middleware (NOTE: Last-In-First-Out order)
 $app->add(new \Api\Middleware\JsonMiddleware());
