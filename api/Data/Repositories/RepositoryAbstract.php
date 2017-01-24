@@ -4,7 +4,7 @@ namespace Api\Data\Repositories;
 
 abstract class RepositoryAbstract
 {
-	protected $adapter;
+	protected $db;
 
 	public function __construct()
 	{

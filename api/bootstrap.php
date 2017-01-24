@@ -18,6 +18,12 @@ $container['databaseAdapter'] = function($container)
   return new \Api\Adapters\DB\MySQLAdapter($container->get('settings')['db']);
 };
 
+// add the validation adapter to the container
+$container['validationAdapter'] = function()
+{
+  return new \Api\Adapters\Validation\ValidationAdapter();
+};
+
 // add exception handler to the container
 $container['errorHandler'] = function ($container)
 {
@@ -32,6 +38,7 @@ $container['errorHandler'] = function ($container)
 
 // assign objects that are needed across the app to $GLOBALS (NOTE: use with responsibility)
 $GLOBALS['db'] = $container['databaseAdapter'];
+$GLOBALS['validator'] = $container['validationAdapter'];
 
 // add middleware (NOTE: Last-In-First-Out order)
 $app->add(new \Api\Middleware\JsonMiddleware());
