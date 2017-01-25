@@ -2,7 +2,9 @@
 
 namespace Api\Logic\Hello;
 
-class HelloException extends \Exception
+use Api\Exceptions\Types\LogicalException;
+
+class HelloException extends LogicalException
 {
     const BASE_ERROR_CODE = 1000;
 

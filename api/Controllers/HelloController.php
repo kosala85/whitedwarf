@@ -7,6 +7,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use Api\Logic\Hello\HelloLogic;
 
+use Api\Validations\HelloRules;
+
 class HelloController extends ControllerAbstract
 {
     private $hello;
@@ -23,6 +25,8 @@ class HelloController extends ControllerAbstract
     public function index(Request $request, Response $response)
 	{
         $name = $request->getAttribute('name');
+
+        $this->validator->validate($this->arrRequestBody, HelloRules::SELECT);
 
         $data = $this->hello->getAllHello();
 

@@ -29,10 +29,15 @@ $container['errorHandler'] = function ($container)
 {
     return function ($request, $response, $exception) use ($container)
     {
-        //Format of exception to return
-        $data = (new \Api\Exceptions\ExceptionHandler($exception))->handle();
+        $handler = new \Api\Exceptions\ExceptionHandler($exception);
 
-        return $response->withJson($data, 500);
+        // format of exception to return
+        $data = $handler->handle();
+
+        // response code for the exception
+        $code = $handler->getResponseCode();
+
+        return $response->withJson($data, $code);
     };
 };
 

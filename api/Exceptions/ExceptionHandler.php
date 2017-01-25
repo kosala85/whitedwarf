@@ -2,18 +2,58 @@
 
 namespace Api\Exceptions;
 
+use Api\Exceptions\Types\LogicalException;
+use Api\Exceptions\Types\ValidationException;
+
 class ExceptionHandler
 {
     protected $exception;
+    protected $intResponseCode;
 
 
     public function __construct($exception)
     {
         $this->exception = $exception;
+        $this->setResponseCode();
     }
 
 
+// ______________________________________________________________________________________________________________ public
+
+
     public function handle()
+    {
+        if($this->exception instanceof ValidationException)
+        {
+            return $this->handleValidationException();
+        }
+
+        return $this->handleException();
+    }
+
+
+    public function getResponseCode()
+    {
+        return $this->intResponseCode;
+    }
+
+
+// _____________________________________________________________________________________________________________ private
+
+
+    private function setResponseCode()
+    {
+        if($this->exception instanceof ValidationException)
+        {
+            $this->intResponseCode = 422;
+            return;
+        }
+
+        $this->intResponseCode = 500;
+    }
+
+
+    private function handleException()
     {
         $exceptionDetails = [];
 
@@ -23,5 +63,21 @@ class ExceptionHandler
         $exceptionDetails['file'] = $this->exception->getFile();
 
         return $exceptionDetails;
+    }
+
+
+    private function handleValidationException()
+    {
+        $arrErrors = [];
+
+        foreach($this->exception->arrValidationErrors as $arrError)
+        {
+            $arrErrors[] = [
+                'field' => $arrError['property'],
+                'message' => $arrError['message']
+            ];
+        }
+
+        return $arrErrors;
     }
 }
