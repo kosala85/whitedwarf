@@ -8,6 +8,7 @@ abstract class RepositoryAbstract
 
 	public function __construct()
 	{
+	    // get a reference to DatabaseAdapter
 		$this->db = $GLOBALS['db'];
 	}
 
