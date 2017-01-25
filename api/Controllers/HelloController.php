@@ -12,9 +12,9 @@ class HelloController extends ControllerAbstract
     private $hello;
 
 
-    public function __construct(Request $request, Response $response)
+    public function __construct($app)
     {
-        parent::__construct($request, $response);
+        parent::__construct($app);
 
         $this->hello = new HelloLogic();
     }
