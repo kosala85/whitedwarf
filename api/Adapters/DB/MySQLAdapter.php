@@ -76,7 +76,7 @@ class MySQLAdapter extends DBAdapterAbstract
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
-        $arrValues = null;
+        $arrValues = [];
 
         $strQuery = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
 

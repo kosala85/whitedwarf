@@ -8,7 +8,7 @@ class HelloRepository extends RepositoryAbstract
 {
     // @TODO: need to find out about naming conventions used in each layer.
 
-	public function selectAll_()
+	public function selectAll()
 	{
 	    $arrWhere = [
 //	        ['id', '!=', 1],
@@ -23,13 +23,13 @@ class HelloRepository extends RepositoryAbstract
         ];
 
         $arrLimit = [
-            0, //offset
-            10, // limit
+//            0, //offset
+//            10, // limit
         ];
 
         $arrColumns = [
-            'id AS identifier',
-            'col_1 AS column_1',
+//            'id AS identifier',
+//            'col_1 AS column_1',
         ];
 
         return $this->db->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
@@ -48,8 +48,7 @@ class HelloRepository extends RepositoryAbstract
     }
 
 
-//    public function createMultipleHello()
-    public function selectAll()
+    public function createMultipleHello()
     {
         $arrColumns = [
             'col_1',
