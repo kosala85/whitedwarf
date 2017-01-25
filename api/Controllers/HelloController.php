@@ -22,6 +22,8 @@ class HelloController extends ControllerAbstract
 
     public function index(Request $request, Response $response)
 	{
+        $name = $request->getAttribute('name');
+
         $data = $this->hello->getAllHello();
 
         return $response->withJson($data, 201);
