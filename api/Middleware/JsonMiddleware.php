@@ -2,6 +2,8 @@
 
 namespace Api\Middleware;
 
+use Api\Exceptions\Types\MiddlewareException;
+
 class JsonMiddleware
 {
     /**
@@ -13,14 +15,14 @@ class JsonMiddleware
      * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response
      * @param  callable $next Next middleware
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Exception
+     * @throws MiddlewareException
      */
     public function __invoke($request, $response, $next)
     {
         // inbound manipulations
         if($request->getHeader('Accept')[0] != 'application/json')
         {
-            throw new \Exception("Api only accepts JSON data");
+            throw new MiddlewareException("Api only accepts JSON data");
         }
 
         // pass to next level

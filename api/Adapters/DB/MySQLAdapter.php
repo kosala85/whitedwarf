@@ -3,6 +3,7 @@
 namespace Api\Adapters\DB;
 
 use \PDO;
+use Api\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract
 {
@@ -203,13 +204,13 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @return array
-     * @throws \Exception
+     * @throws DataException
      */
     public function delete($strTable, array $arrWhere)
     {
         if(empty($arrWhere))
         {
-            throw new \Exception("Cannot delete with an empty WHERE condition");
+            throw new DataException("Cannot delete with an empty WHERE condition");
         }
 
         $arrValues['where'] = $arrWhere;
@@ -432,7 +433,7 @@ class MySQLAdapter extends DBAdapterAbstract
      *
      * @param $mixValue
      * @return int
-     * @throws \Exception
+     * @throws DataException
      */
     private function getPDODataType($mixValue)
     {
@@ -456,7 +457,7 @@ class MySQLAdapter extends DBAdapterAbstract
                 return PDO::PARAM_NULL;
 
             default:
-                throw new \Exception("Unsupported data type");
+                throw new DataException("Unsupported data type");
         }
     }
 
@@ -582,7 +583,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param $arrColumns ['column_1', 'column_2', ...]
      * @param $arrValues [value_1, value_2, ...]
      * @return array
-     * @throws \Exception
+     * @throws DataException
      */
     private function generateValuesBindArray($arrColumns, $arrValues)
     {
@@ -590,7 +591,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
         if($intColumnCount !== count($arrValues))
         {
-            throw new \Exception("Column and Value array length mismatch");
+            throw new DataException("Column and Value array length mismatch");
         }
 
         $arrReturn = [];

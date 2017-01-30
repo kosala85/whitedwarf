@@ -4,7 +4,9 @@ namespace Api\Exceptions;
 
 use Api\Enums\ResponseCodeEnum;
 
+use Api\Exceptions\Types\DataException;
 use Api\Exceptions\Types\LogicalException;
+use Api\Exceptions\Types\MiddlewareException;
 use Api\Exceptions\Types\ValidationException;
 
 class ExceptionHandler
