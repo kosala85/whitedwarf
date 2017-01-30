@@ -105,6 +105,32 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
+     * COUNT from a table.
+     *
+     * @param $strTable
+     * @param array $arrWhere
+     * @return integer
+     */
+    public function count($strTable, array $arrWhere)
+    {
+        $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
+        $arrValues = [];
+
+        $strQuery = 'SELECT COUNT(*) AS count FROM ' . $strTable;
+
+        if(!is_null($strConditions))
+        {
+            $strQuery .= $strConditions;
+            $arrValues['where'] = $arrWhere;
+        }
+
+        $arrValues = $this->generateBindArray(self::QUERY_TYPE_SELECT, $arrValues);
+
+        return (int)$this->query($strQuery, $arrValues)[0]['count'];
+    }
+
+
+    /**
      * INSERT a single record in to a table.
      *
      * @param $strTable

@@ -6,13 +6,11 @@ use Api\Data\Models\Hello;
 
 class HelloRepository extends RepositoryAbstract
 {
-    // @TODO: need to find out about naming conventions used in each layer.
-
 	public function selectHello()
 	{
 	    $arrWhere = [
-//	        ['id', '!=', 1],
-//	        ['col_1', 'LIKE', 'sri lanka%'],
+//	          ['id', '!=', 1],
+//	          ['col_1', 'LIKE', 'sri lanka%'],
 //            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
 //            ['status', 'IN', [1, 2, 3, 4, 5]],
         ];
@@ -34,6 +32,19 @@ class HelloRepository extends RepositoryAbstract
 
         return $this->db->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
 	}
+
+
+	public function countHello()
+    {
+        $arrWhere = [
+//	          ['id', '!=', 1],
+//	          ['col_1', 'LIKE', 'sri lanka%'],
+//            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
+//            ['status', 'IN', [1, 2, 3, 4, 5]],
+        ];
+
+        return $this->db->count(Hello::TABLE, $arrWhere);
+    }
 
 
     public function insertHello()
