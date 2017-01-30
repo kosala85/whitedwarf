@@ -4,6 +4,7 @@ namespace Api\Controllers;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Api\Enums\ResponseCodeEnum;
 
 use Api\Logic\Hello\HelloLogic;
 
@@ -30,7 +31,7 @@ class HelloController extends ControllerAbstract
 
         $data = $this->hello->getAllHello();
 
-        return $response->withJson($data, 201);
+        return $response->withJson($data, ResponseCodeEnum::HTTP_OK);
 	}
 
 }

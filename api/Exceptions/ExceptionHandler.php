@@ -2,6 +2,8 @@
 
 namespace Api\Exceptions;
 
+use Api\Enums\ResponseCodeEnum;
+
 use Api\Exceptions\Types\LogicalException;
 use Api\Exceptions\Types\ValidationException;
 
@@ -45,11 +47,11 @@ class ExceptionHandler
     {
         if($this->exception instanceof ValidationException)
         {
-            $this->intResponseCode = 422;
+            $this->intResponseCode = ResponseCodeEnum::HTTP_UNPROCESSABLE;
             return;
         }
 
-        $this->intResponseCode = 500;
+        $this->intResponseCode = ResponseCodeEnum::HTTP_SERVER_ERROR;
     }
 
 
