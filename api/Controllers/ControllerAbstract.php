@@ -13,7 +13,7 @@ abstract class ControllerAbstract
     {
         $request = $app->get('request');
 
-        // get a reference to ValidatorAdapter
+        // get a reference to ValidationAdapter
         $this->validator = $GLOBALS['validator'];
 
         // assign request query parameters to a class variable as an associative array
