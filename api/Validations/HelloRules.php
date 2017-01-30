@@ -6,25 +6,16 @@ class HelloRules
 {
     const SELECT = '
         {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "oneOf": [
-                        { "$ref": "#/definitions/integerData" },
-                        { "$ref": "#/definitions/stringData" }
-                    ]
-                }
-            },
-            "required": ["data"],
-            "definitions": {
-                "integerData" : {
-                    "type": "integer",
-                    "minimum" : 0
-                },
-                "stringData" : {
-                    "type": "string"
-                }
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
             }
+          },
+          "required": [
+            "id"
+          ]
         }
     ';
 

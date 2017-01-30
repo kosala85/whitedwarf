@@ -16,9 +16,9 @@ class ValidationAdapter
 
     public function validate($arrValues, $strRules)
     {
-        $arrRules = json_decode($strRules);
+        $objRules = json_decode($strRules);
 
-        $this->validator->check($arrValues, $arrRules);
+        $this->validator->check((object)$arrValues, $objRules);
 
         if ($this->validator->isValid())
         {
