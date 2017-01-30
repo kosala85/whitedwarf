@@ -8,7 +8,7 @@ class HelloRepository extends RepositoryAbstract
 {
     // @TODO: need to find out about naming conventions used in each layer.
 
-	public function selectAll()
+	public function selectHello()
 	{
 	    $arrWhere = [
 //	        ['id', '!=', 1],
@@ -36,7 +36,7 @@ class HelloRepository extends RepositoryAbstract
 	}
 
 
-    public function createHello()
+    public function insertHello()
     {
         $arrRecord = [
             'col_1' => 'value_1',
@@ -48,7 +48,7 @@ class HelloRepository extends RepositoryAbstract
     }
 
 
-    public function createMultipleHello()
+    public function insertMultipleHello()
     {
         $arrColumns = [
             'col_1',

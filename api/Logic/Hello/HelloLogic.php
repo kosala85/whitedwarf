@@ -16,7 +16,7 @@ class HelloLogic extends LogicAbstract
 
         try
         {
-            $result = $helloRepository->selectAll();
+            $result = $helloRepository->selectHello();
 
             $this->db->transCommit();
 
