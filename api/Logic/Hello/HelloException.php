@@ -2,7 +2,7 @@
 
 namespace Api\Logic\Hello;
 
-use Api\Exceptions\Types\LogicalException;
+use Api\Core\Exceptions\Types\LogicalException;
 
 class HelloException extends LogicalException
 {

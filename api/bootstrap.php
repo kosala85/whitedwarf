@@ -15,13 +15,13 @@ $container = $app->getContainer();
 // add the database adapter to the container
 $container['databaseAdapter'] = function($container)
 {
-  return new \Api\Adapters\DB\MySQLAdapter($container->get('settings')['db']);
+  return new \Api\Core\Adapters\DB\MySQLAdapter($container->get('settings')['db']);
 };
 
 // add the validation adapter to the container
 $container['validationAdapter'] = function()
 {
-  return new \Api\Adapters\Validation\ValidationAdapter();
+  return new \Api\Core\Adapters\Validation\ValidationAdapter();
 };
 
 // add exception handler to the container
@@ -29,7 +29,7 @@ $container['errorHandler'] = function ($container)
 {
     return function ($request, $response, $exception) use ($container)
     {
-        $handler = new \Api\Exceptions\ExceptionHandler($exception);
+        $handler = new \Api\Core\Exceptions\ExceptionHandler($exception);
 
         // format of exception to return
         $data = $handler->handle();
@@ -46,7 +46,7 @@ $GLOBALS['db'] = $container['databaseAdapter'];
 $GLOBALS['validator'] = $container['validationAdapter'];
 
 // add middleware (NOTE: Last-In-First-Out order)
-$app->add(new \Api\Middleware\JsonMiddleware());
+$app->add(new \Api\Core\Middleware\JsonMiddleware());
 
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');

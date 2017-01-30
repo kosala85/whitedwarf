@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Exceptions\Types;
+namespace Api\Core\Exceptions\Types;
 
 class LogicalException extends \Exception
 {

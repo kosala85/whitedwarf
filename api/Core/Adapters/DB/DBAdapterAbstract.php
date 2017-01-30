@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Adapters\DB;
+namespace Api\Core\Adapters\DB;
 
 abstract class DBAdapterAbstract
 {

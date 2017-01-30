@@ -1,9 +1,9 @@
 <?php
 
-namespace Api\Adapters\DB;
+namespace Api\Core\Adapters\DB;
 
 use \PDO;
-use Api\Exceptions\Types\DataException;
+use Api\Core\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract
 {

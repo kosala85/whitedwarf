@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Adapters\Service;
+namespace Api\Core\Adapters\Service;
 
 abstract class ServiceAdapterAbstract
 {

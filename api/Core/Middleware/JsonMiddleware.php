@@ -1,8 +1,8 @@
 <?php
 
-namespace Api\Middleware;
+namespace Api\Core\Middleware;
 
-use Api\Exceptions\Types\MiddlewareException;
+use Api\Core\Exceptions\Types\MiddlewareException;
 
 class JsonMiddleware
 {

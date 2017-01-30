@@ -1,13 +1,13 @@
 <?php
 
-namespace Api\Exceptions;
+namespace Api\Core\Exceptions;
 
-use Api\Enums\ResponseCodeEnum;
+use Api\Core\Enums\ResponseCodeEnum;
 
-use Api\Exceptions\Types\DataException;
-use Api\Exceptions\Types\LogicalException;
-use Api\Exceptions\Types\MiddlewareException;
-use Api\Exceptions\Types\ValidationException;
+use Api\Core\Exceptions\Types\DataException;
+use Api\Core\Exceptions\Types\LogicalException;
+use Api\Core\Exceptions\Types\MiddlewareException;
+use Api\Core\Exceptions\Types\ValidationException;
 
 class ExceptionHandler
 {

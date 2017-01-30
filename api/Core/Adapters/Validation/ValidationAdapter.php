@@ -1,9 +1,9 @@
 <?php
 
-namespace Api\Adapters\Validation;
+namespace Api\Core\Adapters\Validation;
 
 use JsonSchema\Validator;
-use Api\Exceptions\Types\ValidationException;
+use Api\Core\Exceptions\Types\ValidationException;
 
 class ValidationAdapter
 {

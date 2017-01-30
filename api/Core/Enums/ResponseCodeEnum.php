@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Enums;
+namespace Api\Core\Enums;
 
 class ResponseCodeEnum
 {
