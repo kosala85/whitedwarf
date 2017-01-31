@@ -45,8 +45,20 @@ $container['errorHandler'] = function ($container)
 $GLOBALS['db'] = $container['databaseAdapter'];
 $GLOBALS['validator'] = $container['validationAdapter'];
 
+
 // add middleware (NOTE: Last-In-First-Out order)
+
+//  Check for and set application/json header
 $app->add(new \Api\Core\Middleware\JsonMiddleware());
+
+//  Add JWT authentication
+$app->add(new \Slim\Middleware\JwtAuthentication([
+    "secure" => false,
+    "path" => "/v1",
+    "passthrough" => ["/v1/login"],
+    "secret" => $container->get('settings')['auth']['secret'],
+]));
+
 
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');

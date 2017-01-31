@@ -9,6 +9,10 @@ $settings = [
             'user' => 'root',
             'password' => '',
             'schema' => 'pickme_psg',
+        ],
+
+        'auth' => [
+            'secret' => 'secretkey',
         ]
     ]
 ];
