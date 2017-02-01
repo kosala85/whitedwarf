@@ -8,6 +8,8 @@ use Api\Core\Enums\ResponseCodeEnum;
 
 use Api\Logic\Auth\AuthLogic;
 
+use Api\Validations\AuthRules;
+
 class AuthController extends ControllerAbstract
 {
     public function __construct($app)
@@ -18,10 +20,12 @@ class AuthController extends ControllerAbstract
 
     public function login(Request $request, Response $response)
 	{
-	    $auth = new AuthLogic();
+	    $authLogic = new AuthLogic();
+
+        $this->validator->validate($this->arrRequestBody, AuthRules::LOGIN);
 
         //  check for validity and generate token
-        $strToken = $auth->authenticate('admin@pickme.lk', '21232f297a57a5a743894a0e4a801fc3');
+        $strToken = $authLogic->authenticate($this->arrRequestBody['email'], $this->arrRequestBody['password']);
 
 	    $arrData = ['token' => $strToken];
 
