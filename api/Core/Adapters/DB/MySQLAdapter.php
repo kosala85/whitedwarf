@@ -3,7 +3,6 @@
 namespace Api\Core\Adapters\DB;
 
 use \PDO;
-use Api\Core\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract
 {
@@ -111,7 +110,7 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param array $arrWhere
      * @return integer
      */
-    public function count($strTable, array $arrWhere)
+    public function count($strTable, array $arrWhere = [])
     {
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $arrValues = [];
@@ -139,6 +138,11 @@ class MySQLAdapter extends DBAdapterAbstract
      */
     public function insert($strTable, array $arrRecord)
     {
+        if(empty($arrRecord))
+        {
+            MySQLAdapterException::noInsertValues();
+        }
+
         $arrColumns = array_keys($arrRecord);
         $arrValues[0] = array_values($arrRecord);
 
@@ -198,6 +202,16 @@ class MySQLAdapter extends DBAdapterAbstract
      */
     public function update($strTable, array $arrSet, array $arrWhere)
     {
+        if(empty($arrSet))
+        {
+            MySQLAdapterException::noUpdateValues();
+        }
+
+        if(empty($arrWhere))
+        {
+            MySQLAdapterException::noWhereConditions();
+        }
+
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strPlaceholders = '';
         $arrValues['set'] = $arrSet;
@@ -236,7 +250,7 @@ class MySQLAdapter extends DBAdapterAbstract
     {
         if(empty($arrWhere))
         {
-            throw new DataException("Cannot delete with an empty WHERE condition");
+            MySQLAdapterException::noWhereConditions();
         }
 
         $arrValues['where'] = $arrWhere;
@@ -411,10 +425,15 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateOrdering(array $arrOrder)
     {
         $strOrder = '';
+        $strField = '';
+        $strValue = '';
 
         foreach($arrOrder as $arrCriteria)
         {
-            $strOrder .= $arrCriteria[0] . ' ' . $arrCriteria[1] . ', ';
+            $strField = array_keys($arrCriteria);
+            $strValue = array_values($arrCriteria);
+
+            $strOrder .= $strField[0] . ' ' . $strValue[0] . ', ';
         }
 
         return ' ORDER BY ' . rtrim($strOrder, ', ');
