@@ -13,7 +13,7 @@ class AuthLogic extends LogicAbstract
 		$userRepository = new UserRepository();
 
         // get user
-        $arrColumns = ['id', 'user_type', 'status'];
+        $arrColumns = ['id', 'type', 'status'];
 
         $arrWhere = [
             ['email', '=', $email],

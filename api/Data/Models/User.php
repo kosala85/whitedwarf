@@ -4,8 +4,8 @@ namespace Api\Data\Models;
 
 class User
 {
-	const TABLE = 'people';
+	const TABLE = 'user';
 
 	const STATUS_ACTIVE = 'A';
-	const STATUS_INACTIVE = 'D';
+	const STATUS_INACTIVE = 'I';
 }

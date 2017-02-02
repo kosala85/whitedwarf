@@ -8,7 +8,7 @@ $settings = [
             'host' => 'localhost',
             'user' => 'root',
             'password' => '',
-            'schema' => 'pickme_psg',
+            'schema' => 'slimtest',
         ],
 
         'auth' => [
