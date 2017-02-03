@@ -10,12 +10,12 @@ class JWTAuthException extends AuthException
 
     public static function unknown()
     {
-        throw new JWTAuthException("Unknown Hello Exception", self::BASE_ERROR_CODE);
+        throw new JWTAuthException("Unknown Auth Exception", self::BASE_ERROR_CODE);
     }
 
-    public static function exception()
+    public static function noUser()
     {
-        throw new JWTAuthException("Hello Exception", self::BASE_ERROR_CODE + 1);
+        throw new JWTAuthException("Username Password mismatch", self::BASE_ERROR_CODE + 1);
     }
 
 }

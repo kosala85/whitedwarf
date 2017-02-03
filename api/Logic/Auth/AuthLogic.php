@@ -26,9 +26,14 @@ class AuthLogic extends LogicAbstract
 
         $arrLimit = [1];
 
-        $user = $userRepository->selectUser($arrWhere, $arrOrder, $arrLimit, $arrColumns);
+        $arrUser = $userRepository->selectUser($arrWhere, $arrOrder, $arrLimit, $arrColumns);
 
-        return $user;
+        if(empty($arrUser))
+        {
+            JWTAuthException::noUser();
+        }
+
+        return $arrUser;
 
 	}
 }
