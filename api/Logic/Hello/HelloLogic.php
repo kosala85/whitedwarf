@@ -2,8 +2,7 @@
 
 namespace Api\Logic\Hello;
 
-use Api\Logic\LogicAbstract;
-
+use Api\Core\Abstracts\LogicAbstract;
 use Api\Data\Repositories\HelloRepository;
 
 class HelloLogic extends LogicAbstract

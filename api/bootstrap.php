@@ -24,6 +24,12 @@ $container['validationAdapter'] = function()
   return new \Api\Core\Adapters\Validation\ValidationAdapter();
 };
 
+// add the authentication adapter to the container
+$container['authAdapter'] = function($container)
+{
+  return new \Api\Core\Adapters\Auth\JWTAdapter($container->get('settings')['auth']);
+};
+
 // add exception handler to the container
 $container['errorHandler'] = function ($container)
 {
@@ -44,21 +50,11 @@ $container['errorHandler'] = function ($container)
 // assign objects that are needed across the app to $GLOBALS (NOTE: use with responsibility)
 $GLOBALS['db'] = $container['databaseAdapter'];
 $GLOBALS['validator'] = $container['validationAdapter'];
-
+$GLOBALS['auth'] = $container['authAdapter'];
 
 // add middleware (NOTE: Last-In-First-Out order)
-
 //  Check for and set application/json header
 $app->add(new \Api\Core\Middleware\JsonMiddleware());
-
-//  Add JWT authentication
-$app->add(new \Slim\Middleware\JwtAuthentication([
-    "secure" => false,
-    "path" => "/v1",
-    "passthrough" => ["/v1/login"],
-    "secret" => $container->get('settings')['auth']['secret'],
-]));
-
 
 // call on routs (NOTE: a nifty way is used in the routs to call the controller class)
 require(__DIR__ . '/routs.php');

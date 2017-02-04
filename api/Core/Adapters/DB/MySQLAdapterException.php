@@ -8,9 +8,9 @@ class MySQLAdapterException extends DataException
 {
     const BASE_ERROR_CODE = 1000;
 
-    public static function unknown()
+    public static function unknown($exception)
     {
-        throw new MySQLAdapterException("Unknown Hello Exception", self::BASE_ERROR_CODE);
+        throw new MySQLAdapterException("MySQL Exception: " . $exception->getMessage(), self::BASE_ERROR_CODE);
     }
 
     public static function noInsertValues()

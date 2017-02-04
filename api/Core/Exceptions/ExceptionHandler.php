@@ -3,7 +3,6 @@
 namespace Api\Core\Exceptions;
 
 use Api\Core\Enums\ResponseCodeEnum;
-
 use Api\Core\Exceptions\Types\DataException;
 use Api\Core\Exceptions\Types\LogicalException;
 use Api\Core\Exceptions\Types\MiddlewareException;

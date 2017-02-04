@@ -2,7 +2,9 @@
 
 namespace Api\Core\Adapters\Service;
 
-abstract class ServiceAdapterAbstract
+use Api\Core\Abstracts\ServiceAdapterAbstract;
+
+abstract class ExampleServiceAdapter
 {
     // Adapter abstract for data service apis.
 }

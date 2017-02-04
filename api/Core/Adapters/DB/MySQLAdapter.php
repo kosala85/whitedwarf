@@ -3,6 +3,7 @@
 namespace Api\Core\Adapters\DB;
 
 use \PDO;
+use Api\Core\Abstracts\DBAdapterAbstract;
 
 class MySQLAdapter extends DBAdapterAbstract
 {
@@ -39,10 +40,18 @@ class MySQLAdapter extends DBAdapterAbstract
         $connectionString = "mysql:host={$this->strHost};dbname={$this->strSchema};charset=utf8";
 
         // create the db handler
-        $this->handler = new PDO($connectionString, $this->strUser, $this->strPassword);
+        try
+        {
+            $this->handler = new PDO($connectionString, $this->strUser, $this->strPassword);
 
-        $this->handler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->handler->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this->handler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->handler->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);    
+        }
+        catch(\Exception $e)
+        {
+            MySQLAdapterException::unknown($e);
+        }
+        
     }
 
 
