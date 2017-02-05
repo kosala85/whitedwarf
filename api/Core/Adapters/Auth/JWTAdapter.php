@@ -5,6 +5,7 @@ namespace Api\Core\Adapters\Auth;
 use Firebase\JWT\JWT;
 
 use Api\Data\Repositories\UserRepository;
+use Api\Data\Models\User;
 
 class JWTAdapter
 {
@@ -70,6 +71,7 @@ class JWTAdapter
         $arrWhere = [
             ['email', '=', $strEmail],
             ['password', '=', $strPassword],
+            ['status', '=', User::STATUS_ACTIVE],
         ];
 
         $arrOrder = [
@@ -95,8 +97,8 @@ class JWTAdapter
             "exp" => $intTime + $this->intLifetime, // expire on
             "data" => [
                 "user" => [
-                    "id" => 1,
-                    "type" => 'A',
+                    "id" => $arrUser['id'],
+                    "type" => $arrUser['type'],
                 ],
             ],
         ];

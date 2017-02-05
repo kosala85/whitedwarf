@@ -20,7 +20,7 @@ class JWTAdapterException extends AuthException
 
     public static function noUser()
     {
-        throw new JWTAdapterException("Username Password mismatch", self::BASE_ERROR_CODE + 2);
+        throw new JWTAdapterException("Username Password mismatch or user inactive", self::BASE_ERROR_CODE + 2);
     }
 
     public static function noToken()
