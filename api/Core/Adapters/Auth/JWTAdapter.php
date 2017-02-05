@@ -19,7 +19,7 @@ class JWTAdapter
 
     public function authenticate($strToken)
     {
-        $arrToken = [];
+        $token;
 
         if(empty($strToken))
         {
@@ -28,7 +28,7 @@ class JWTAdapter
 
         try
         {
-           $arrToken = JWT::decode($strToken, $this->strSecretKey, ['HS256']); 
+           $token = JWT::decode($strToken, $this->strSecretKey, ['HS256']); 
         }
         catch(\Exception $e)
         {
@@ -36,6 +36,10 @@ class JWTAdapter
         }
 
         // do all checks with token
+
+
+        // add user to the session
+        $GLOBALS['session']->user = $token->data->user;
 
         return true;
     }

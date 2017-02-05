@@ -2,6 +2,7 @@
 
 namespace Api\Data\Repositories;
 
+use Api\Core\Abstracts\RepositoryAbstract;
 use Api\Data\Models\Hello;
 
 class HelloRepository extends RepositoryAbstract

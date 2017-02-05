@@ -52,9 +52,14 @@ $GLOBALS['db'] = $container['databaseAdapter'];
 $GLOBALS['validator'] = $container['validationAdapter'];
 $GLOBALS['auth'] = $container['authAdapter'];
 
+// setup a globally accessible session object
+$GLOBALS['session'] = (object)[
+  'user' => null,
+];
+
 // add middleware (NOTE: Last-In-First-Out order)
 //  Check for and set application/json header
 $app->add(new \Api\Core\Middleware\JsonMiddleware());
 
-// call on routs (NOTE: a nifty way is used in the routs to call the controller class)
+// call on routs
 require(__DIR__ . '/routs.php');
