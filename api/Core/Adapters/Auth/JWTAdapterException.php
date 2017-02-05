@@ -13,23 +13,28 @@ class JWTAdapterException extends AuthException
         throw new JWTAdapterException("JWT Exception: " . $exception->getMessage(), self::BASE_ERROR_CODE);
     }
 
+    public static function invalidLifetime()
+    {
+        throw new JWTAdapterException("Positive integer is not provided for token lifetime", self::BASE_ERROR_CODE + 1);
+    }
+
     public static function noUser()
     {
-        throw new JWTAdapterException("Username Password mismatch", self::BASE_ERROR_CODE + 1);
+        throw new JWTAdapterException("Username Password mismatch", self::BASE_ERROR_CODE + 2);
     }
 
     public static function noToken()
     {
-        throw new JWTAdapterException("Need a token", self::BASE_ERROR_CODE + 2);
+        throw new JWTAdapterException("Need a token", self::BASE_ERROR_CODE + 3);
     }
 
 	public static function tokenInvalid()
     {
-        throw new JWTAdapterException("The token is invalid", self::BASE_ERROR_CODE + 3);
+        throw new JWTAdapterException("The token is invalid", self::BASE_ERROR_CODE + 4);
     }
 
     public static function tokenExpired()
     {
-        throw new JWTAdapterException("The token has expired", self::BASE_ERROR_CODE + 4);
+        throw new JWTAdapterException("The token has expired", self::BASE_ERROR_CODE + 5);
     }
 }

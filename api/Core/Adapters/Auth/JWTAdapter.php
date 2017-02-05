@@ -9,11 +9,22 @@ use Api\Data\Repositories\UserRepository;
 class JWTAdapter
 {
     private $strSecretKey;
+    private $strIssuer;
+    private $strSubject;
+    private $intLifetime;
     
 
     public function __construct($arrConfig)
     {
         $this->strSecretKey = $arrConfig['secret'];
+        $this->strIssuer = $arrConfig['issuer'];
+        $this->strSubject = $arrConfig['subject'];
+        $this->intLifetime = (int)$arrConfig['lifetime'];
+
+        if($this->intLifetime <= 0)
+        {
+            JWTAdapterException::invalidLifetime();
+        }
     }
 
 
@@ -35,7 +46,11 @@ class JWTAdapter
             JWTAdapterException::tokenInvalid();
         }
 
-        // do all checks with token
+        // check whether token expired
+        if(time() > $token->exp)
+        {
+            JWTAdapterException::tokenExpired();
+        }
 
 
         // add user to the session
@@ -70,12 +85,14 @@ class JWTAdapter
             JWTAdapterException::noUser();
         }
 
+        $intTime = time();
+
         // create token            
         $arrToken = [
-            "iss" => "http://example.org",
-            "aud" => "http://example.com",
-            "iat" => 1356999524,
-            "nbf" => 1357000000,
+            "iss" => $this->strIssuer,              // issuer
+            "sub" => $this->strSubject,             // subject
+            "iat" => $intTime,                      // issued at
+            "exp" => $intTime + $this->intLifetime, // expire on
             "data" => [
                 "user" => [
                     "id" => 1,
