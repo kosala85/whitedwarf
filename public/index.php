@@ -1,5 +1,12 @@
 <?php
 
-require(__DIR__ . '/../api/bootstrap.php');
+try
+{
+	require(__DIR__ . '/../api/bootstrap.php');
 
-$app->run();
+	$app->run();
+}
+catch(\Exception $exception)
+{
+	require(__DIR__ . '/../api/anomaly.php');
+}
