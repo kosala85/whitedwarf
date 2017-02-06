@@ -31,7 +31,7 @@ class JWTAdapter
 
     public function authenticate($strToken)
     {
-        $token;
+        $token = null;
 
         if(empty($strToken))
         {
@@ -71,7 +71,6 @@ class JWTAdapter
         $arrWhere = [
             ['email', '=', $strEmail],
             ['password', '=', $strPassword],
-            ['status', '=', User::STATUS_ACTIVE],
         ];
 
         $arrOrder = [
@@ -82,9 +81,19 @@ class JWTAdapter
 
         $arrUser = $userRepository->selectUser($arrWhere, $arrOrder, $arrLimit, $arrColumns);
 
+        // check whether there is a user
         if(empty($arrUser))
         {
             JWTAdapterException::noUser();
+        }
+
+        // get first row
+        $arrUser = $arrUser[0];
+
+        // check whether user is active
+        if($arrUser['status'] !== User::STATUS_ACTIVE)
+        {
+            JWTAdapterException::inactiveUser();
         }
 
         $intTime = time();
