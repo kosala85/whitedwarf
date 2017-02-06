@@ -7,7 +7,7 @@ $settings = [
         'db' => [
             'host' => 'localhost',
             'user' => 'root',
-            'password' => 'admin',
+            'password' => 'root',
             'schema' => 'slimtest',
         ],
 
