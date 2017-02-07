@@ -65,21 +65,12 @@ class JWTAdapter
 	{
 		$userRepository = new UserRepository();
 
-        // get user
-        $arrColumns = ['id', 'type', 'status'];
-
-        $arrWhere = [
-            ['email', '=', $strEmail],
-            ['password', '=', $strPassword],
+        $arrCredentials = [
+            'email' => $strEmail,
+            'password' => $strPassword,
         ];
 
-        $arrOrder = [
-             ['id' => 'DESC']
-        ];
-
-        $arrLimit = [1];
-
-        $arrUser = $userRepository->selectUser($arrWhere, $arrOrder, $arrLimit, $arrColumns);
+        $arrUser = $userRepository->selectUserByCredentials($arrCredentials);
 
         // check whether there is a user
         if(empty($arrUser))
@@ -87,7 +78,7 @@ class JWTAdapter
             JWTAdapterException::noUser();
         }
 
-        // get first row
+        // get first row since the return array always is a collection of rows
         $arrUser = $arrUser[0];
 
         // check whether user is active

@@ -7,6 +7,10 @@ use Api\Data\Models\User;
 
 class UserRepository extends RepositoryAbstract
 {
+
+// _______________________________________________________________________________________________ common repo functions
+
+
     /**
      * Select User(s) based on different search criteria.
      *
@@ -20,7 +24,6 @@ class UserRepository extends RepositoryAbstract
 	{
         return $this->db->select(User::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
 	}
-
 
     /**
      * Get count of Users based on different criteria.
@@ -117,6 +120,31 @@ class UserRepository extends RepositoryAbstract
 
             throw $e;
         }
+    }
+
+
+// ______________________________________________________________________________________________ special repo functions
+
+
+    /**
+     * Select a user by login credentials.
+     *
+     * @param $arrCredentials
+     * @return mixed
+     */
+    public function selectUserByCredentials($arrCredentials)
+    {
+        $strQuery = "SELECT id, type, status FROM " . User::TABLE .
+                    " WHERE email = :email 
+                        AND password = PASSWORD(:password) 
+                     LIMIT 1";
+
+        $arrValues = [
+            ':email' => $arrCredentials['email'],
+            ':password' => $arrCredentials['password'],
+        ];
+
+        return $this->db->query($strQuery, $arrValues);
     }
 
 }
