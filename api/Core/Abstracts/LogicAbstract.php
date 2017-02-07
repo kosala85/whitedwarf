@@ -8,6 +8,9 @@ abstract class LogicAbstract
     protected $session;
 
 
+    /**
+     * LogicAbstract constructor.
+     */
     public function __construct()
     {
         // get a reference to DatabaseAdapter

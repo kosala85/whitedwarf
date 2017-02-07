@@ -13,8 +13,13 @@ class JWTAdapter
     private $strIssuer;
     private $strSubject;
     private $intLifetime;
-    
 
+
+    /**
+     * JWTAdapter constructor.
+     *
+     * @param $arrConfig
+     */
     public function __construct($arrConfig)
     {
         $this->strSecretKey = $arrConfig['secret'];
@@ -29,6 +34,12 @@ class JWTAdapter
     }
 
 
+    /**
+     * Authenticate a token and assign user details to the session.
+     *
+     * @param $strToken
+     * @return bool
+     */
     public function authenticate($strToken)
     {
         $token = null;
@@ -61,6 +72,13 @@ class JWTAdapter
     }
 
 
+    /**
+     * Check the database for a user matching provided credentials and create an authentication token.
+     *
+     * @param $strEmail
+     * @param $strPassword
+     * @return string
+     */
 	public function createToken($strEmail, $strPassword)
 	{
 		$userRepository = new UserRepository();

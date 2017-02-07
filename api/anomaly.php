@@ -1,7 +1,7 @@
 <?php
 
 /**
-* This is to handle errors thrown at the time of Slim bootup.
+* Handle errors thrown at the time of Slim bootup.
 */
 
 // get autoloader

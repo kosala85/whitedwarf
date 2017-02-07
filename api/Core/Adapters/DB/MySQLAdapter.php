@@ -4,6 +4,7 @@ namespace Api\Core\Adapters\DB;
 
 use \PDO;
 use Api\Core\Abstracts\DBAdapterAbstract;
+use Api\Core\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract
 {

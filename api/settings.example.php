@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Settings example file.
+ *      (NOTE: Create a copy of this file and name it settings.php to store application settings)
+ */
+
 $settings = [
     'settings' => [
         'displayErrorDetails' => false,

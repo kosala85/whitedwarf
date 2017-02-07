@@ -11,12 +11,24 @@ use Api\Validations\AuthRules;
 
 class AuthController extends ControllerAbstract
 {
+    /**
+     * AuthController constructor.
+     *
+     * @param $app
+     */
     public function __construct($app)
     {
         parent::__construct($app);
     }
 
 
+    /**
+     * Login.
+     * 
+     * @param Request $request
+     * @param Response $response
+     * @return mixed
+     */
     public function login(Request $request, Response $response)
 	{
 	    $authenticator = $GLOBALS['auth'];

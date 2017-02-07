@@ -4,6 +4,9 @@ namespace Api\Validations;
 
 class AuthRules
 {
+    /**
+     * Rules to validate login credentials.
+     */
     const LOGIN = '
         {
           "$schema": "http://json-schema.org/draft-04/schema#",

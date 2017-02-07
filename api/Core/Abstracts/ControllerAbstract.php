@@ -10,6 +10,11 @@ abstract class ControllerAbstract
     protected $session;
 
 
+    /**
+     * ControllerAbstract constructor.
+     *
+     * @param $app
+     */
     public function __construct($app)
     {
         $request = $app->get('request');

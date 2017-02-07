@@ -14,6 +14,11 @@ class ExceptionHandler
     protected $intResponseCode;
 
 
+    /**
+     * ExceptionHandler constructor.
+     *
+     * @param $exception
+     */
     public function __construct($exception)
     {
         $this->exception = $exception;
@@ -24,6 +29,11 @@ class ExceptionHandler
 // ______________________________________________________________________________________________________________ public
 
 
+    /**
+     * Handle error according to error type.
+     *
+     * @return array
+     */
     public function handle()
     {
         if($this->exception instanceof ValidationException)
@@ -44,6 +54,9 @@ class ExceptionHandler
 // _____________________________________________________________________________________________________________ private
 
 
+    /**
+     * Set HTTP response code depending on the error type.
+     */
     private function setResponseCode()
     {
         if($this->exception instanceof ValidationException)
@@ -56,6 +69,11 @@ class ExceptionHandler
     }
 
 
+    /**
+     * Handle any exception.
+     *
+     * @return array
+     */
     private function handleException()
     {
         $exceptionDetails = [];
@@ -69,6 +87,11 @@ class ExceptionHandler
     }
 
 
+    /**
+     * Handle validation exceptions.
+     *
+     * @return array
+     */
     private function handleValidationException()
     {
         $arrErrors = [];
