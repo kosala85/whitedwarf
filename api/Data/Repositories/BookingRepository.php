@@ -135,39 +135,21 @@ class BookingRepository extends RepositoryAbstract
 
     public function selectBookingsByFilters($arrFilters)
     {
-//        // set mappings to filters ___
-//        $this->queryParser->setMappings([
-//            // dynamic filters
-//            "passenger_phone" => [
-//                'field' => Passenger::TABLE . '.phone'
-//            ],
-//            "booked_from" => [
-//                'field' => 'PL.booking_from'
-//            ],
-//            "company_id" => [
-//                'field' => 'PL.company_id'
-//            ],
-//
-//            // custom filters
-//            "trip_status" => [
-//                'autoAppend' => false
-//            ],
-//            "booked_by" => [
-//                'autoAppend' => false
-//            ],
-//            "pickup_date" => [
-//                'autoAppend' => false
-//            ],
-//        ]);
+        $columns = "";
+        $table = "";
+        $joins = "";
+        $where = "";
+        $limit = "";
+        $order = "";
 
 
         // filters
-        $intPassengerPhone = $arrFilters['passenger_phone'];
-        $intBookedFrom = $arrFilters['booked_from'];
-        $intCompanyId = $arrFilters['company_id'];
-        $intTripStatus = $arrFilters['trip_status'];
-        $intBookedBy = $arrFilters['booked_by'];
-        $dtePickupDate = $arrFilters['pickup_date'];
+        $intPassengerPhone = isset($arrFilters['passenger_phone']) ? (int)$arrFilters['passenger_phone'] : null;
+        $intBookedFrom = isset($arrFilters['booked_from']) ? (int)$arrFilters['booked_from'] : null;
+        $intCompanyId = isset($arrFilters['company_id']) ? (int)$arrFilters['company_id'] : null;
+        $intTripStatus = isset($arrFilters['trip_status']) ? (int)$arrFilters['trip_status'] : null;
+        $intBookedBy = isset($arrFilters['booked_by']) ? (int)$arrFilters['booked_by'] : null;
+        $dtePickupDate = isset($arrFilters['pickup_date']) ? $arrFilters['pickup_date'] : null;
 
 
         // select table based on trip status
@@ -280,7 +262,7 @@ class BookingRepository extends RepositoryAbstract
         }
 
         // filter by trip status
-        if(!empty($intTripStatus))
+        if(!is_null($intTripStatus))
         {
             $now = new \DateTime();
             $now = $now->setTimezone(new \DateTimeZone('Asia/Colombo'));
@@ -308,31 +290,31 @@ class BookingRepository extends RepositoryAbstract
             // apply ordering based on the trip status
             if($intTripStatus === Booking::TRIP_STATUS_COMPLETE)
             {
-                $order = " PL.drop_time DESC";
+                $order = " ORDER BY PL.drop_time DESC";
             }
             else
             {
-                $order = " PL.pickup_time ASC";
+                $order = " ORDER BY PL.pickup_time ASC";
             }
         }
         else
         {
             // set ordering when trip status is not sent
-            $order = " PL.pickup_time ASC";
+            $order = " ORDER BY PL.pickup_time ASC";
         }
 
         // filter by pickup date
-        if(!empty($dtePickupDate))
+        if(!is_null($dtePickupDate))
         {
             $date = new \DateTime($dtePickupDate);
             $date = $date->setTimezone(new \DateTimeZone('Asia/Colombo'));
             $date = $date->format('Y-m-d');
 
-            $builder->where('PL.pickup_date', '=', $date);
+            $where .= " AND PL.pickup_date = '$date'";
         }
         else
         {
-            $builder->where('PL.pickup_date', '=', app('db')->raw("CURDATE()"));
+            $where .= " AND PL.pickup_date = CURDATE()";
         }
 
 
@@ -340,16 +322,7 @@ class BookingRepository extends RepositoryAbstract
 //        $this->queryParser->setBuilder($builder);
 //        $this->queryParser->applyFilters($filters);
 //        $builder = $this->queryParser->getBuilder();
-//
-//
-//        return $builder->simplePaginate($pageSize)->items();
 
-
-        // return limit
-        $limit = "";
-
-        // order by
-        $order = "ORDER BY";
 
         $strQuery = "SELECT {$columns} FROM {$table} {$joins} {$where} {$limit} {$order}";
 
