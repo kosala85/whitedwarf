@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Middleware;
+namespace Api\Core\Middleware\Auth;
 
 use Api\Core\Exceptions\Types\MiddlewareException;
 use Api\Core\Adapters\Auth\JWTAdapterException;
