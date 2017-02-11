@@ -1,8 +1,6 @@
 <?php
 
-namespace Api\Core\Middleware;
-
-use Api\Core\Exceptions\Types\MiddlewareException;
+namespace Api\Core\Middleware\Json;
 
 class JsonMiddleware
 {
@@ -22,7 +20,7 @@ class JsonMiddleware
         // inbound manipulations
         if($request->getHeader('Accept')[0] != 'application/json')
         {
-            throw new MiddlewareException("Api only accepts JSON data");
+            JsonMiddlewareException::notJson();
         }
 
         // pass to next level
