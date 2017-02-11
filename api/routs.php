@@ -12,9 +12,12 @@ $app->group('/v1', function()
     // authenticated routs
     $this->group('', function()
     {
-
-    	$this->get('/hello/{name}', HelloController::class . ':index');
-    	$this->post('/hello/{name}', HelloController::class . ':index');
+    	// hello routs
+    	$this->get('/hello', HelloController::class . ':index');
+    	$this->get('/hello/{id}', HelloController::class . ':getById');
+    	$this->post('/hello', HelloController::class . ':create');
+    	$this->put('/hello/{id}', HelloController::class . ':update');
+    	$this->delete('/hello/{id}', HelloController::class . ':delete');
     	
     })->add(new \Api\Core\Middleware\Auth\AuthMiddleware());
      

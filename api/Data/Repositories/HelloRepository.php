@@ -7,7 +7,7 @@ use Api\Data\Models\Hello;
 
 class HelloRepository extends RepositoryAbstract
 {
-	public function selectHello()
+	public function selectHello($arrFilter)
 	{
 	    $arrWhere = [
 //	          ['id', '!=', 1],
@@ -35,7 +35,7 @@ class HelloRepository extends RepositoryAbstract
 	}
 
 
-	public function countHello()
+	public function countHello($arrFilter)
     {
         $arrWhere = [
 //	          ['id', '!=', 1],

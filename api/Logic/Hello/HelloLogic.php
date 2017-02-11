@@ -7,15 +7,24 @@ use Api\Data\Repositories\HelloRepository;
 
 class HelloLogic extends LogicAbstract
 {
-	public function getAllHello()
-	{
-		$helloRepository = new HelloRepository();
+    private $helloRepository;
 
+
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->helloRepository = new HelloRepository();
+    }
+
+
+	public function getHelloList($arrFilter)
+	{
         $this->db->transBegin();
 
         try
         {
-            $result = $helloRepository->selectHello();
+            $result = $this->helloRepository->selectHello($arrFilter);
 
             $this->db->transCommit();
 
