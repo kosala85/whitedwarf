@@ -42,4 +42,9 @@ class JWTAdapterException extends AuthException
     {
         throw new JWTAdapterException("The token has expired", self::BASE_ERROR_CODE + 5);
     }
+
+    public static function noBearerToken()
+    {
+        throw new JWTAdapterException("Token is not of the type 'Bearer'", self::BASE_ERROR_CODE + 5);
+    }
 }

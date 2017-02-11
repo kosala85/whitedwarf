@@ -5,3 +5,4 @@
    - feature: Error handler
    - feature: MySQL adapter
    - feature: JSON schema validation adapter
+   - feature: JWT Authentication adapter
