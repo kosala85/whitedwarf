@@ -307,6 +307,19 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
+     * Generate conditions to be appended to a WHERE clause
+     *
+     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
+     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @return string
+     */
+    public function generateCondition($arrWhere)
+    {
+        return $this->generateWhereClause($arrWhere, true);
+    }
+
+
+    /**
      * Begin a transaction.
      */
     public function transBegin()
@@ -381,11 +394,11 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate the WHERE clause
      *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
      *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @return string
      */
-    private function generateWhereClause(array $arrWhere)
+    private function generateWhereClause(array $arrWhere, $blnAppend = false)
     {
         $strWhere = '';
         $strTemp = ''; // holds IN values temporarily
@@ -419,6 +432,13 @@ class MySQLAdapter extends DBAdapterAbstract
             }
         }
 
+
+        // when asked to generate a part of a where clause
+        if($blnAppend)
+        {
+            return $strWhere;
+        }
+
         // trim leading ' AND '
         $strWhere = ltrim($strWhere, ' AND ');
 
@@ -435,15 +455,15 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateOrdering(array $arrOrder)
     {
         $strOrder = '';
-        $strField = '';
-        $strValue = '';
+        $arrField = [];
+        $arrValue = [];
 
         foreach($arrOrder as $arrCriteria)
         {
-            $strField = array_keys($arrCriteria);
-            $strValue = array_values($arrCriteria);
+            $arrField = array_keys($arrCriteria);
+            $arrValue = array_values($arrCriteria);
 
-            $strOrder .= $strField[0] . ' ' . $strValue[0] . ', ';
+            $strOrder .= $arrField[0] . ' ' . $arrValue[0] . ', ';
         }
 
         return ' ORDER BY ' . rtrim($strOrder, ', ');
