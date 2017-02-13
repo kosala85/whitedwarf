@@ -34,17 +34,14 @@ abstract class RepositoryAbstract
 			'dynamic' => [],
 		];
 
-		$arrMappingField = [];
-        $arrMappingValue = [];
-		
 		foreach($arrMappings as $strMappingField => $strMappingColumn)
 		{
 			foreach($arrFilters as $arrFilter)
 			{
-				// check whether a fliter exists for the mapping
+				// check whether a filter exists for the mapping
 				if($arrFilter[0] == $strMappingField)
 				{
-					// add to static filters when mapping column is null
+					// add to static filters when mapping column is null otherwise add to dynamic filters
 					if(is_null($strMappingColumn))
 					{
 						$arrReturn['static'][$strMappingField] = $arrFilter[1];
@@ -53,14 +50,6 @@ abstract class RepositoryAbstract
 					{
 						$arrReturn['dynamic'][] = $this->generateWhereCondition($strMappingColumn, $arrFilter);
 					}
-				}
-				else
-				{
-					// add to static filters when mapping column is null
-					if(is_null($strMappingColumn))
-					{
-						$arrReturn['static'][$strMappingField] = null;
-					}	
 				}
 			}
 		}
