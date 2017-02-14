@@ -12,6 +12,10 @@ abstract class RepositoryAbstract
 		3 => 'LIKE',
 		4 => 'IN',
 		5 => 'BETWEEN',
+		6 => '<',
+		7 => '>',
+		8 => '<=',
+		9 => '>=',
 	];
 
     /**
