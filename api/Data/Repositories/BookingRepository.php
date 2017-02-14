@@ -151,6 +151,8 @@ class BookingRepository extends RepositoryAbstract
             'pickup_date' => null,
         ];
 
+        $arrValues = [];
+
         $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
 
         // static filters
@@ -334,13 +336,7 @@ class BookingRepository extends RepositoryAbstract
 
         $arrValues = array_merge($arrValues, $arrDynamicValues);
 
-
         $strQuery = "SELECT {$columns} FROM {$table} {$joins} {$where} {$limit} {$order}";
-
-        $arrValues = [
-//            ':email' => $arrCredentials['email'],
-//            ':password' => $arrCredentials['password'],
-        ];
 
         return $this->db->query($strQuery, $arrValues);
     }
