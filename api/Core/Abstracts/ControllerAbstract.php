@@ -31,7 +31,7 @@ abstract class ControllerAbstract
         // build up the filters array if it exists
         if(isset($this->arrRequestParams['filters']))
         {
-            $this->arrRequestParams['filters'] = json_decode($this->arrRequestParams['filters']);
+            $this->arrRequestParams['filters'] = json_decode($this->arrRequestParams['filters'], true);
         }
 
         // assign request body in to a class variable as an associative array

@@ -27,7 +27,7 @@ class BookingController extends ControllerAbstract
 	{
 //        $this->validator->validate($this->arrRequestBody, HelloRules::SELECT);
 
-        $data = $this->booking->getAllBookings($this->arrRequestParams);
+        $data = $this->booking->getAllBookings($this->arrRequestParams['filters']);
 
         return $response->withJson($data, ResponseCodeEnum::HTTP_OK);
 	}

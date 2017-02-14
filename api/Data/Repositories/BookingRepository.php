@@ -151,8 +151,10 @@ class BookingRepository extends RepositoryAbstract
             'pickup_date' => null,
         ];
 
-        $this->
+        $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
 
+        print_r($arrFilters);
+        die;
 
         // filters
         $intPassengerPhone = isset($arrFilters['passenger_phone']) ? (int)$arrFilters['passenger_phone'] : null;
