@@ -59,7 +59,7 @@ $GLOBALS['session'] = (object)[
 
 // add middleware (NOTE: Last-In-First-Out order)
 //  Check for and set application/json header
-$app->add(new \Api\Core\Middleware\JsonMiddleware());
+$app->add(new \Api\Core\Middleware\Json\JsonMiddleware());
 
 // call on routs
 require(__DIR__ . '/routs.php');

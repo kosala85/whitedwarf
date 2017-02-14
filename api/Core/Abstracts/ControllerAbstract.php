@@ -29,10 +29,18 @@ abstract class ControllerAbstract
         $this->arrRequestParams = $request->getQueryParams();
 
         // assign request body in to a class variable as an associative array
-        if(!empty($request->getParsedBody()))
+        $this->arrRequestBody = $request->getParsedBody();
+    }
+
+
+    protected function getSearchFilter()
+    {
+        if(isset($this->arrRequestParams['filter']))
         {
-            $this->arrRequestBody = $request->getParsedBody();
+            return (array)json_decode($this->arrRequestParams['filter']);    
         }
+        
+        return [];
     }
 
 }

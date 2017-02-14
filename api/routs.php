@@ -13,12 +13,18 @@ $app->group('/v1', function()
     // authenticated routs
     $this->group('', function()
     {
+    	// hello routs
+    	$this->get('/hello', HelloController::class . ':index');
+    	$this->get('/hello/{id}', HelloController::class . ':getById');
+    	$this->post('/hello', HelloController::class . ':create');
+    	$this->put('/hello/{id}', HelloController::class . ':update');
+    	$this->delete('/hello/{id}', HelloController::class . ':delete');
 
     	$this->get('/hello/{name}', HelloController::class . ':index');
     	$this->post('/hello/{name}', HelloController::class . ':index');
 
         $this->get('/booking', BookingController::class . ':index');
-    	
-    })->add(new \Api\Core\Middleware\AuthMiddleware());
+
+    })->add(new \Api\Core\Middleware\Auth\AuthMiddleware());
      
 });
