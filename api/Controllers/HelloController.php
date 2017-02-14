@@ -25,8 +25,6 @@ class HelloController extends ControllerAbstract
 
     public function index(Request $request, Response $response)
 	{
-        $arrFilter = $this->getSearchFilter();
-
         // $this->validator->validate($arrFilter, HelloRules::SELECT_FILTER);
 
         $data = $this->hello->getHelloList($this->arrRequestParams['filters']);
