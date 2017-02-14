@@ -38,15 +38,4 @@ abstract class ControllerAbstract
         $this->arrRequestBody = $request->getParsedBody();
     }
 
-
-    protected function getSearchFilter()
-    {
-        if(isset($this->arrRequestParams['filter']))
-        {
-            return (array)json_decode($this->arrRequestParams['filter']);    
-        }
-        
-        return [];
-    }
-
 }
