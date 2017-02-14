@@ -24,7 +24,7 @@ abstract class RepositoryAbstract
 	}
 
 
-// _________________________________________________________________________ protected
+// ___________________________________________________________________________________________________________ protected
 
 
 	protected function rebuildFilter(array $arrFilters, array $arrMappings)
