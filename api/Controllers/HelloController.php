@@ -29,7 +29,7 @@ class HelloController extends ControllerAbstract
 
         // $this->validator->validate($arrFilter, HelloRules::SELECT_FILTER);
 
-        $data = $this->hello->getHelloList($arrFilter);
+        $data = $this->hello->getHelloList($this->arrRequestParams['filters']);
 
         return $response->withJson($data, ResponseCodeEnum::HTTP_OK);
 	}
