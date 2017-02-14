@@ -326,9 +326,13 @@ class BookingRepository extends RepositoryAbstract
             $where .= " AND PL.pickup_date = CURDATE()";
         }
 
-
         // apply dynamic filters ___
-        $where .= $this->generateWhereCondition($arrFilters['dynamic']);
+        $where .= $this->db->generateConditionString($arrFilters['dynamic']);
+
+        // generate dynamic value array
+        $arrDynamicValues = $this->generateDynamicValueArray($arrFilters['dynamic']);
+
+        $arrValues = array_merge($arrValues, $arrDynamicValues);
 
 
         $strQuery = "SELECT {$columns} FROM {$table} {$joins} {$where} {$limit} {$order}";

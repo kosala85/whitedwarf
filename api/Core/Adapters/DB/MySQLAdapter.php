@@ -313,7 +313,7 @@ class MySQLAdapter extends DBAdapterAbstract
      *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @return string
      */
-    public function generateCondition($arrWhere)
+    public function generateConditionString($arrWhere)
     {
         return $this->generateWhereClause($arrWhere, true);
     }
@@ -394,8 +394,9 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate the WHERE clause
      *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
      *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param bool $blnAppend
      * @return string
      */
     private function generateWhereClause(array $arrWhere, $blnAppend = false)
