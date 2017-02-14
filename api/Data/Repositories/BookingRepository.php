@@ -153,16 +153,12 @@ class BookingRepository extends RepositoryAbstract
 
         $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
 
-        print_r($arrFilters);
-        die;
+        // static filters
+        $arrStaticFilters = $arrFilters['static'];
 
-        // filters
-        $intPassengerPhone = isset($arrFilters['passenger_phone']) ? (int)$arrFilters['passenger_phone'] : null;
-        $intBookedFrom = isset($arrFilters['booked_from']) ? (int)$arrFilters['booked_from'] : null;
-        $intCompanyId = isset($arrFilters['company_id']) ? (int)$arrFilters['company_id'] : null;
-        $intTripStatus = isset($arrFilters['trip_status']) ? (int)$arrFilters['trip_status'] : null;
-        $intBookedBy = isset($arrFilters['booked_by']) ? (int)$arrFilters['booked_by'] : null;
-        $dtePickupDate = isset($arrFilters['pickup_date']) ? $arrFilters['pickup_date'] : null;
+        $intTripStatus = isset($arrStaticFilters['trip_status']) ? (int)$arrStaticFilters['trip_status'] : null;
+        $intBookedBy = isset($arrStaticFilters['booked_by']) ? (int)$arrStaticFilters['booked_by'] : null;
+        $dtePickupDate = isset($arrStaticFilters['pickup_date']) ? $arrStaticFilters['pickup_date'] : null;
 
 
         // select table based on trip status
@@ -331,10 +327,8 @@ class BookingRepository extends RepositoryAbstract
         }
 
 
-//        // apply dynamic filters ___
-//        $this->queryParser->setBuilder($builder);
-//        $this->queryParser->applyFilters($filters);
-//        $builder = $this->queryParser->getBuilder();
+        // apply dynamic filters ___
+        $where .= $this->generateWhereCondition($arrFilters['dynamic']);
 
 
         $strQuery = "SELECT {$columns} FROM {$table} {$joins} {$where} {$limit} {$order}";

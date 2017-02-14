@@ -62,8 +62,11 @@ abstract class RepositoryAbstract
 	}
 
 
-	protected function generateWhereCondition($strColumn, $arrFilter)
+	protected function generateWhereCondition($arrFilters)
 	{
+	    print_r($arrFilters);
+	    die;
+
 		// set operator
 		$strOperator = $this->arrOperators[1];
 
