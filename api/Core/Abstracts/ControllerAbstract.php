@@ -28,6 +28,12 @@ abstract class ControllerAbstract
         // assign request query parameters to a class variable as an associative array
         $this->arrRequestParams = $request->getQueryParams();
 
+        // build up the filters array if it exists
+        if(isset($this->arrRequestParams['filters']))
+        {
+            $this->arrRequestParams['filters'] = json_decode($this->arrRequestParams['filters']);
+        }
+
         // assign request body in to a class variable as an associative array
         $this->arrRequestBody = $request->getParsedBody();
     }
