@@ -142,6 +142,17 @@ class BookingRepository extends RepositoryAbstract
         $limit = "";
         $order = "";
 
+        $arrMappings = [
+            'passenger_phone' => 'passenger_phone',
+            'booked_from' => 'booked_from',
+            'company_id' => 'company_id',
+            'trip_status' => null,
+            'booked_by' => null,
+            'pickup_date' => null,
+        ];
+
+        $this->
+
 
         // filters
         $intPassengerPhone = isset($arrFilters['passenger_phone']) ? (int)$arrFilters['passenger_phone'] : null;
