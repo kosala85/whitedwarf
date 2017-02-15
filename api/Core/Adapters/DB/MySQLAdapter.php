@@ -307,19 +307,6 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
     /**
-     * Generate conditions to be appended to a WHERE clause
-     *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
-     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
-     * @return string
-     */
-    public function generateCondition($arrWhere)
-    {
-        return $this->generateWhereClause($arrWhere, true);
-    }
-
-
-    /**
      * Begin a transaction.
      */
     public function transBegin()
@@ -368,6 +355,35 @@ class MySQLAdapter extends DBAdapterAbstract
     }
 
 
+// ______________________________________________________________________________________________ query building helpers
+
+
+    /**
+     * Get the WHERE clause as a string.
+     *
+     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
+     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param bool $blnPartial
+     * @return string
+     */
+    public function getWhereString($arrWhere, $blnPartial = false)
+    {
+        return $this->generateWhereClause($arrWhere, $blnPartial);
+    }
+
+
+    /**
+     * Get the bind array for a WHERE clause.
+     *
+     * @param $arrWhere
+     * @return array
+     */
+    public function getWhereBindArray($arrWhere)
+    {
+        return $this->generateWhereBindArray($arrWhere);
+    }
+
+
 // _____________________________________________________________________________________________________________ private
 
 
@@ -394,11 +410,12 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate the WHERE clause
      *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
      *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param bool $blnPartial
      * @return string
      */
-    private function generateWhereClause(array $arrWhere, $blnAppend = false)
+    private function generateWhereClause(array $arrWhere, $blnPartial = false)
     {
         $strWhere = '';
         $strTemp = ''; // holds IN values temporarily
@@ -434,7 +451,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
 
         // when asked to generate a part of a where clause
-        if($blnAppend)
+        if($blnPartial)
         {
             return $strWhere;
         }
