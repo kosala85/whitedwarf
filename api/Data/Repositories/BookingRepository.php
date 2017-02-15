@@ -143,9 +143,9 @@ class BookingRepository extends RepositoryAbstract
         $order = "";
 
         $arrMappings = [
-            'passenger_phone' => 'passenger_phone',
-            'booked_from' => 'booked_from',
-            'company_id' => 'company_id',
+            'passenger_phone' => 'PL.passenger_phone',
+            'booked_from' => 'PL.booked_from',
+            'company_id' => 'PL.company_id',
             'trip_status' => null,
             'booked_by' => null,
             'pickup_date' => null,
@@ -329,14 +329,20 @@ class BookingRepository extends RepositoryAbstract
         }
 
         // apply dynamic filters ___
-        $where .= $this->db->generateConditionString($arrFilters['dynamic']);
+        $where .= $this->db->getWhereString($arrFilters['dynamic'], true);
 
-        // generate dynamic value array
-        $arrDynamicValues = $this->generateDynamicValueArray($arrFilters['dynamic']);
+        // generate dynamic filter value array
+        $arrDynamicValues = $this->db->getWhereBindArray($arrFilters['dynamic']);
 
         $arrValues = array_merge($arrValues, $arrDynamicValues);
 
+//        print_r($arrValues);
+//        die;
+
         $strQuery = "SELECT {$columns} FROM {$table} {$joins} {$where} {$limit} {$order}";
+
+//        echo $strQuery;
+//        die;
 
         return $this->db->query($strQuery, $arrValues);
     }
