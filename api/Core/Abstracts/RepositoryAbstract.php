@@ -31,6 +31,13 @@ abstract class RepositoryAbstract
 // ___________________________________________________________________________________________________________ protected
 
 
+    /**
+     * Rebuild the structure filter sent from the client that it can be used in the api.
+     *
+     * @param array $arrFilters
+     * @param array $arrMappings
+     * @return array
+     */
 	protected function rebuildFilter(array $arrFilters, array $arrMappings)
 	{
 		$arrReturn = [
@@ -62,6 +69,13 @@ abstract class RepositoryAbstract
 	}
 
 
+    /**
+     * Generate a single where condition array.
+     *
+     * @param $strColumn
+     * @param $arrFilter
+     * @return array
+     */
 	protected function generateWhereCondition($strColumn, $arrFilter)
 	{
 		// set operator
