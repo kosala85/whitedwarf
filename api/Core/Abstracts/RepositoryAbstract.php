@@ -18,6 +18,7 @@ abstract class RepositoryAbstract
 		9 => '>=',
 	];
 
+
     /**
      * RepositoryAbstract constructor.
      */
