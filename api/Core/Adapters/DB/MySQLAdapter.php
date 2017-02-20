@@ -355,35 +355,6 @@ class MySQLAdapter extends DBAdapterAbstract
     }
 
 
-// ______________________________________________________________________________________________ query building helpers
-
-
-    /**
-     * Get the WHERE clause as a string.
-     *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
-     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
-     * @param bool $blnPartial
-     * @return string
-     */
-    public function getWhereString($arrWhere, $blnPartial = false)
-    {
-        return $this->generateWhereClause($arrWhere, $blnPartial);
-    }
-
-
-    /**
-     * Get the bind array for a WHERE clause.
-     *
-     * @param $arrWhere
-     * @return array
-     */
-    public function getWhereBindArray($arrWhere)
-    {
-        return $this->generateWhereBindArray($arrWhere);
-    }
-
-
 // _____________________________________________________________________________________________________________ private
 
 

@@ -20,8 +20,6 @@ $app->group('/v1', function()
     	$this->put('/hello/{id}', HelloController::class . ':update');
     	$this->delete('/hello/{id}', HelloController::class . ':delete');
 
-        $this->get('/booking', BookingController::class . ':index');
-
     })->add(new \Api\Core\Middleware\Auth\AuthMiddleware());
      
 });
