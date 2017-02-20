@@ -9,32 +9,30 @@ class HelloRepository extends RepositoryAbstract
 {
     public function selectHello($arrFilters)
 	{
-
-        // echo json_encode([['id', 1, 1, true], ['name', ['admin', 'user'], 1, true]]);
-        // die;
-
+	    // define filter mappings to table columns ___
         $arrMappings = [
-            'id' => null,
-            'name' => null,
+            'trip_status' => 'status',
+            'passenger_phone' => 'phone',
             'type' => null, // null is mapped to fields that are static filters
         ];
 
-        // print_r($arrFilters);
-        // die;
-
+        // rebuild the filters array to be compatible with the repository ___
         $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
 
-        print_r($arrFilters);
-        die;
+	    $arrWhere = [
+	          ['id', '!=', 1],
+              ['status', 'IN', [1, 2, 3, 4, 5]],
+           ];
 
-        $arrWhere = $arrFilter['dynamic'];
+	    // add static where conditions ___
+        if($arrFilters['static']['trip_status'] == 1)
+        {
+            $arrWhere[] = ['status', '=', 10, true];
+        }
 
-	    // $arrWhere = [
-	    //       ['id', '!=', 1],
-	    //       ['col_1', 'LIKE', 'sri lanka%'],
-        //       ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
-        //       ['status', 'IN', [1, 2, 3, 4, 5]],
-        //    ];
+	    // add dynamic where conditions ___
+        $arrWhere = array_merge($arrWhere, $arrFilters['dynamic']);
+
 
         $arrOrder = [
 //            ['id', 'ASC'],
