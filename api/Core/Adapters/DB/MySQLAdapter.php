@@ -406,11 +406,12 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate the WHERE clause
      *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
      *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param bool $blnPartial
      * @return string
      */
-    private function generateWhereClause(array $arrWhere)
+    private function generateWhereClause(array $arrWhere, $blnPartial = false)
     {
         $strWhere = '';
         $strTemp = ''; // holds IN values temporarily
@@ -427,7 +428,7 @@ class MySQLAdapter extends DBAdapterAbstract
 
                 foreach($arrCondition[2] as $arrInValue)
                 {
-                    $strTemp .= ':' . $arrCondition[0] . $arrInValue . ', ';
+                    $strTemp .= ':' . $this->toValidPlaceholderName($arrCondition[0]) . $arrInValue . ', '; // set placeholder
                 }
 
                 $strTemp = rtrim($strTemp, ', ');
@@ -436,12 +437,19 @@ class MySQLAdapter extends DBAdapterAbstract
             }
             elseif($arrCondition[1] == 'BETWEEN')
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $arrCondition[0] . ' AND :to' . $arrCondition[0]; // set placeholder
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $this->toValidPlaceholderName($arrCondition[0]) . ' AND :to' . $this->toValidPlaceholderName($arrCondition[0]); // set placeholder
             }
             else
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $arrCondition[0]; // set placeholder
+                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $this->toValidPlaceholderName($arrCondition[0]); // set placeholder
             }
+        }
+
+
+        // when asked to generate a part of a where clause
+        if($blnPartial)
+        {
+            return $strWhere;
         }
 
         // trim leading ' AND '
@@ -460,15 +468,15 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateOrdering(array $arrOrder)
     {
         $strOrder = '';
-        $strField = '';
-        $strValue = '';
+        $arrField = [];
+        $arrValue = [];
 
         foreach($arrOrder as $arrCriteria)
         {
-            $strField = array_keys($arrCriteria);
-            $strValue = array_values($arrCriteria);
+            $arrField = array_keys($arrCriteria);
+            $arrValue = array_values($arrCriteria);
 
-            $strOrder .= $strField[0] . ' ' . $strValue[0] . ', ';
+            $strOrder .= $arrField[0] . ' ' . $arrValue[0] . ', ';
         }
 
         return ' ORDER BY ' . rtrim($strOrder, ', ');
@@ -619,17 +627,17 @@ class MySQLAdapter extends DBAdapterAbstract
             {
                 foreach($arrCondition[2] as $arrInValue)
                 {
-                    $arrReturn[':' . $arrCondition[0] . $arrInValue] = $arrInValue;
+                    $arrReturn[':' . $this->toValidPlaceholderName($arrCondition[0]) . $arrInValue] = $arrInValue;
                 }
             }
             elseif($arrCondition[1] == 'BETWEEN')
             {
-                $arrReturn[':from' . $arrCondition[0]] = $arrCondition[2][0];
-                $arrReturn[':to' . $arrCondition[0]] = $arrCondition[2][1];
+                $arrReturn[':from' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2][0];
+                $arrReturn[':to' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2][1];
             }
             else
             {
-                $arrReturn[':' . $arrCondition[0]] = $arrCondition[2];
+                $arrReturn[':' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2];
             }
         }
 
@@ -701,6 +709,20 @@ class MySQLAdapter extends DBAdapterAbstract
         }
 
         return $arrReturn;
+    }
+
+
+    /**
+     * Make the name of the placeholder acceptable by PDO.
+     *
+     * @param $strName
+     * @return mixed
+     */
+    private function toValidPlaceholderName($strName)
+    {
+        $arrReplaceChars = ['.', '-'];
+
+        return str_replace($arrReplaceChars, '_', $strName);
     }
 
 }

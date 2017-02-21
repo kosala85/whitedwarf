@@ -7,14 +7,32 @@ use Api\Data\Models\Hello;
 
 class HelloRepository extends RepositoryAbstract
 {
-	public function selectHello()
+    public function selectHello($arrFilters)
 	{
-	    $arrWhere = [
-//	          ['id', '!=', 1],
-//	          ['col_1', 'LIKE', 'sri lanka%'],
-//            ['date', 'BETWEEN', ['2017-01-01', '2017-01-02']],
-//            ['status', 'IN', [1, 2, 3, 4, 5]],
+	    // define filter mappings to table columns ___
+        $arrMappings = [
+            'trip_status' => 'status',
+            'passenger_phone' => 'phone',
+            'type' => null, // null is mapped to fields that are static filters
         ];
+
+        // rebuild the filters array to be compatible with the repository ___
+        $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
+
+	    $arrWhere = [
+	          ['id', '!=', 1],
+              ['status', 'IN', [1, 2, 3, 4, 5]],
+           ];
+
+	    // add static where conditions ___
+        if($arrFilters['static']['trip_status'] == 1)
+        {
+            $arrWhere[] = ['status', '=', 10, true];
+        }
+
+	    // add dynamic where conditions ___
+        $arrWhere = array_merge($arrWhere, $arrFilters['dynamic']);
+
 
         $arrOrder = [
 //            ['id', 'ASC'],
@@ -35,7 +53,7 @@ class HelloRepository extends RepositoryAbstract
 	}
 
 
-	public function countHello()
+	public function countHello($arrFilter)
     {
         $arrWhere = [
 //	          ['id', '!=', 1],
