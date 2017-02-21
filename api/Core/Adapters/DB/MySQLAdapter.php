@@ -80,15 +80,21 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
      */
-    public function select($strTable, array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
+    public function select($strTable, array $arrJoin, array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
     {
         $strColumns = empty($arrColumns) ? '*' : $this->generateColumns($arrColumns);
+        $strJoins = empty($arrJoin) ? null : $this->generateJoins($arrJoin);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
         $arrValues = [];
 
         $strQuery = 'SELECT ' . $strColumns . ' FROM ' . $strTable;
+
+        if(!is_null($strJoins))
+        {
+            $strQuery .= $strJoins;
+        }
 
         if(!is_null($strConditions))
         {
@@ -375,6 +381,25 @@ class MySQLAdapter extends DBAdapterAbstract
 
         // remove the trailing comma and return
         return rtrim($strColumns, ', ');
+    }
+
+
+    /**
+     * Generate table joins.
+     *
+     * @param array $arrJoins ['LEFT JOIN', 'table', 'table.column', 'other_table.column']
+     * @return string
+     */
+    private function generateJoins(array $arrJoins)
+    {
+        $strJoins = '';
+
+        foreach($arrJoins as $arrJoin)
+        {
+            $strJoins .= ' ' . $arrJoin[0] . ' ' . $arrJoin[1] . ' ON ' . $arrJoin[2] . ' = ' . $arrJoin[3];
+        }
+
+        return $strJoins;
     }
 
 
