@@ -19,9 +19,10 @@ class HelloRepository extends RepositoryAbstract
         // rebuild the filters array to be compatible with the repository ___
         $arrFilters = $this->rebuildFilter($arrFilters, $arrMappings);
 
+
 	    $arrWhere = [
 	          ['id', '!=', 1],
-              ['status', 'IN', [1, 2, 3, 4, 5]],
+              ['status', 'IN', [1, 2, 3, 4, 5], true],
            ];
 
 	    // add static where conditions ___
@@ -33,6 +34,11 @@ class HelloRepository extends RepositoryAbstract
 	    // add dynamic where conditions ___
         $arrWhere = array_merge($arrWhere, $arrFilters['dynamic']);
 
+
+        $arrJoins = [
+//            ['LEFT JOIN', 'table_1 T1', 'T1.column', 'T.column'],
+//            ['JOIN', 'table_2 T2', 'T2.column', 'T.column'],
+        ];
 
         $arrOrder = [
 //            ['id', 'ASC'],
@@ -49,7 +55,7 @@ class HelloRepository extends RepositoryAbstract
 //            'col_1 AS column_1',
         ];
 
-        return $this->db->select(Hello::TABLE, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
+        return $this->db->select(Hello::TABLE, $arrJoins, $arrWhere, $arrOrder, $arrLimit, $arrColumns);
 	}
 
 

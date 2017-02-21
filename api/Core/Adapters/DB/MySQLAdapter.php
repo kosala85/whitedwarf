@@ -409,11 +409,12 @@ class MySQLAdapter extends DBAdapterAbstract
      * Generate the WHERE clause
      *
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
-     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
-     * @param bool $blnPartial
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]],
+     *                         [[['column_3', '=', value], ['column_4', '=', value]], true], // nested condition
+     *                        ]
      * @return string
      */
-    private function generateWhereClause(array $arrWhere, $blnPartial = false)
+    private function generateWhereClause(array $arrWhere)
     {
         $strWhere = '';
         $strTemp = ''; // holds IN values temporarily
@@ -447,12 +448,6 @@ class MySQLAdapter extends DBAdapterAbstract
             }
         }
 
-
-        // when asked to generate a part of a where clause
-        if($blnPartial)
-        {
-            return $strWhere;
-        }
 
         // trim leading ' AND '
         $strWhere = ltrim($strWhere, ' AND ');
