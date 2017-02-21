@@ -11,7 +11,7 @@ class HelloRepository extends RepositoryAbstract
 	{
 	    // define filter mappings to table columns ___
         $arrMappings = [
-            'trip_status' => 'status',
+            'trip_status' => null,
             'passenger_phone' => 'phone',
             'type' => null, // null is mapped to fields that are static filters
         ];
@@ -22,7 +22,9 @@ class HelloRepository extends RepositoryAbstract
 
 	    $arrWhere = [
 	          ['id', '!=', 1],
-              ['status', 'IN', [1, 2, 3, 4, 5], true],
+              ['status', 'IN', [1, 2, 3, 4, 5], false],
+              [[['col1', '!=', 2], ['col2', '!=', 3]], true],
+              [[['col3', 'IN', [1,2,3]], ['col126548', '!=', 3]]]
            ];
 
 	    // add static where conditions ___
