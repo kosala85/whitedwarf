@@ -73,6 +73,8 @@ class MySQLAdapter extends DBAdapterAbstract
      *      (NOTE: Use this for simple to moderate queries)
      *
      * @param $strTable
+     * @param $arrJoins [['LEFT JOIN', 'table_1', 'table_1.column', 'other_table.column'],
+     *                   ['JOIN', 'table_2', 'table_2.column', 'other_table.column']]
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @param array $arrOrder [['column_1' => 'ASC'], ['column_2', 'DESC']]
@@ -80,10 +82,10 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
      */
-    public function select($strTable, array $arrJoin, array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
+    public function select($strTable, array $arrJoin = [], array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
     {
         $strColumns = empty($arrColumns) ? '*' : $this->generateColumns($arrColumns);
-        $strJoins = empty($arrJoin) ? null : $this->generateJoins($arrJoin);
+        $strJoins = empty($arrJoins) ? null : $this->generateJoins($arrJoins);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
