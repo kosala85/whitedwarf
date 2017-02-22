@@ -56,7 +56,7 @@ abstract class RepositoryAbstract
 					// add to static filters when mapping column is null otherwise add to dynamic filters
 					if(is_null($strMappingColumn))
 					{
-						$arrReturn['static'][$strMappingField] = $arrFilter[1];
+						$arrReturn['static'][$strMappingField] = $arrFilter[2];
 					}
 					else
 					{
@@ -79,13 +79,7 @@ abstract class RepositoryAbstract
      */
 	protected function generateWhereCondition($strColumn, $arrFilter)
 	{
-		// set operator
-		$strOperator = $this->arrOperators[1];
-
-		if(isset($arrFilter[2]))
-		{
-			$strOperator = $this->arrOperators[$arrFilter[2]];
-		}
+        $strOperator = $this->arrOperators[$arrFilter[1]];
 
 		// set whether condition is of type 'OR'
 		$blnOr = false;
@@ -96,7 +90,7 @@ abstract class RepositoryAbstract
 		}
 
 		// set value
-		$arrValue = $arrFilter[1];
+		$arrValue = $arrFilter[2];
 
 		return [
 			$strColumn,
