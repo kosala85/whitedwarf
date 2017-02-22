@@ -73,6 +73,8 @@ class MySQLAdapter extends DBAdapterAbstract
      *      (NOTE: Use this for simple to moderate queries)
      *
      * @param $strTable
+     * @param $arrJoins [['LEFT JOIN', 'table_1', 'table_1.column', 'other_table.column'],
+     *                   ['JOIN', 'table_2', 'table_2.column', 'other_table.column']]
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @param array $arrOrder [['column_1' => 'ASC'], ['column_2', 'DESC']]
@@ -80,10 +82,10 @@ class MySQLAdapter extends DBAdapterAbstract
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
      */
-    public function select($strTable, array $arrJoin, array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
+    public function select($strTable, array $arrJoins = [], array $arrWhere = [], array $arrOrder = [], array $arrLimit = [], array $arrColumns = [])
     {
         $strColumns = empty($arrColumns) ? '*' : $this->generateColumns($arrColumns);
-        $strJoins = empty($arrJoin) ? null : $this->generateJoins($arrJoin);
+        $strJoins = empty($arrJoins) ? null : $this->generateJoins($arrJoins);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $strOrder = empty($arrOrder) ? null : $this->generateOrdering($arrOrder);
         $strLimit = empty($arrLimit) ? null : $this->generateLimit($arrLimit);
@@ -124,14 +126,21 @@ class MySQLAdapter extends DBAdapterAbstract
      *
      * @param $strTable
      * @param array $arrWhere
-     * @return integer
+     * @param array $arrJoins
+     * @return int
      */
-    public function count($strTable, array $arrWhere = [])
+    public function count($strTable, array $arrWhere = [], array $arrJoins = [])
     {
+        $strJoins = empty($arrJoins) ? null : $this->generateJoins($arrJoins);
         $strConditions = empty($arrWhere) ? null : $this->generateWhereClause($arrWhere);
         $arrValues = [];
 
         $strQuery = 'SELECT COUNT(*) AS count FROM ' . $strTable;
+
+        if(!is_null($strJoins))
+        {
+            $strQuery .= $strJoins;
+        }
 
         if(!is_null($strConditions))
         {
@@ -406,42 +415,68 @@ class MySQLAdapter extends DBAdapterAbstract
     /**
      * Generate the WHERE clause
      *
-     * @param $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
-     *                   ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', true],['column_2', 'LIKE', '%value%'],
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]],
+     *                         [[['column_3', '=', value], ['column_4', '=', value]], true], // nested condition
+     *                        ]
      * @return string
      */
     private function generateWhereClause(array $arrWhere)
     {
         $strWhere = '';
         $strTemp = ''; // holds IN values temporarily
+        $strNestedWhere = '';
 
         foreach($arrWhere as $arrCondition)
         {
-            // if $arrCondition has a 'true' value at index 3 treat as an 'OR'
-            (isset($arrCondition[3]) && $arrCondition[3] === true) ? $strWhere .= ' OR ' : $strWhere .= ' AND ';
 
-            if($arrCondition[1] == 'IN')
+            // if $arrCondition has an array at index 0 treat as nested condition
+            if(is_array($arrCondition[0]))
             {
-                // clean before starting
-                $strTemp = '';
+                // call where clause generation function recursively
+                $strNestedWhere = $this->generateWhereClause($arrCondition[0]);
 
-                foreach($arrCondition[2] as $arrInValue)
+                // remove prepended WHERE
+                $strNestedWhere = ltrim($strNestedWhere, ' WHERE ');
+
+                if(isset($arrCondition[1]) && $arrCondition[1] === true)
                 {
-                    $strTemp .= ':' . $arrCondition[0] . $arrInValue . ', ';
+                    $strWhere .= ' OR (' . $strNestedWhere . ')';
                 }
-
-                $strTemp = rtrim($strTemp, ', ');
-
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' (' . $strTemp . ')';
-            }
-            elseif($arrCondition[1] == 'BETWEEN')
-            {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $arrCondition[0] . ' AND :to' . $arrCondition[0]; // set placeholder
+                else
+                {
+                    $strWhere .= ' AND (' . $strNestedWhere . ')';
+                }
             }
             else
             {
-                $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $arrCondition[0]; // set placeholder
+                // if $arrCondition has a 'true' value at index 3 treat as an 'OR'
+                (isset($arrCondition[3]) && $arrCondition[3] === true) ? $strWhere .= ' OR ' : $strWhere .= ' AND ';
+
+                if($arrCondition[1] == 'IN')
+                {
+                    // clean before starting
+                    $strTemp = '';
+
+                    foreach($arrCondition[2] as $arrInValue)
+                    {
+                        $strTemp .= ':' . $this->toValidPlaceholderName($arrCondition[0]) . $arrInValue . ', '; // set placeholder
+                    }
+
+                    $strTemp = rtrim($strTemp, ', ');
+
+                    $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' (' . $strTemp . ')';
+                }
+                elseif($arrCondition[1] == 'BETWEEN')
+                {
+                    $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :from' . $this->toValidPlaceholderName($arrCondition[0]) . ' AND :to' . $this->toValidPlaceholderName($arrCondition[0]); // set placeholder
+                }
+                else
+                {
+                    $strWhere .= $arrCondition[0] . ' ' . $arrCondition[1] . ' :' . $this->toValidPlaceholderName($arrCondition[0]); // set placeholder
+                }
             }
+
         }
 
         // trim leading ' AND '
@@ -460,15 +495,15 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateOrdering(array $arrOrder)
     {
         $strOrder = '';
-        $strField = '';
-        $strValue = '';
+        $arrField = [];
+        $arrValue = [];
 
         foreach($arrOrder as $arrCriteria)
         {
-            $strField = array_keys($arrCriteria);
-            $strValue = array_values($arrCriteria);
+            $arrField = array_keys($arrCriteria);
+            $arrValue = array_values($arrCriteria);
 
-            $strOrder .= $strField[0] . ' ' . $strValue[0] . ', ';
+            $strOrder .= $arrField[0] . ' ' . $arrValue[0] . ', ';
         }
 
         return ' ORDER BY ' . rtrim($strOrder, ', ');
@@ -612,24 +647,35 @@ class MySQLAdapter extends DBAdapterAbstract
     private function generateWhereBindArray(array $arrWhere)
     {
         $arrReturn = [];
+        $arrNested = [];
 
         foreach($arrWhere as $arrCondition)
         {
-            if($arrCondition[1] == 'IN')
+            if(is_array($arrCondition[0]))
             {
-                foreach($arrCondition[2] as $arrInValue)
-                {
-                    $arrReturn[':' . $arrCondition[0] . $arrInValue] = $arrInValue;
-                }
-            }
-            elseif($arrCondition[1] == 'BETWEEN')
-            {
-                $arrReturn[':from' . $arrCondition[0]] = $arrCondition[2][0];
-                $arrReturn[':to' . $arrCondition[0]] = $arrCondition[2][1];
+                // call where clause generation function recursively
+                $arrNested = $this->generateWhereBindArray($arrCondition[0]);
+
+                $arrReturn = array_merge($arrReturn, $arrNested);
             }
             else
             {
-                $arrReturn[':' . $arrCondition[0]] = $arrCondition[2];
+                if($arrCondition[1] == 'IN')
+                {
+                    foreach($arrCondition[2] as $arrInValue)
+                    {
+                        $arrReturn[':' . $this->toValidPlaceholderName($arrCondition[0]) . $arrInValue] = $arrInValue;
+                    }
+                }
+                elseif($arrCondition[1] == 'BETWEEN')
+                {
+                    $arrReturn[':from' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2][0];
+                    $arrReturn[':to' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2][1];
+                }
+                else
+                {
+                    $arrReturn[':' . $this->toValidPlaceholderName($arrCondition[0])] = $arrCondition[2];
+                }
             }
         }
 
@@ -701,6 +747,20 @@ class MySQLAdapter extends DBAdapterAbstract
         }
 
         return $arrReturn;
+    }
+
+
+    /**
+     * Make the name of the placeholder acceptable by PDO.
+     *
+     * @param $strName
+     * @return mixed
+     */
+    private function toValidPlaceholderName($strName)
+    {
+        $arrReplaceChars = ['.', '-'];
+
+        return str_replace($arrReplaceChars, '_', $strName);
     }
 
 }

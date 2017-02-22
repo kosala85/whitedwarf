@@ -2,6 +2,7 @@
 
 use Api\Controllers\HelloController;
 use Api\Controllers\AuthController;
+use Api\Controllers\BookingController;
 
 
 $app->group('/v1', function()
@@ -12,10 +13,13 @@ $app->group('/v1', function()
     // authenticated routs
     $this->group('', function()
     {
+    	// hello routs
+    	$this->get('/hello', HelloController::class . ':index');
+    	$this->get('/hello/{id}', HelloController::class . ':getById');
+    	$this->post('/hello', HelloController::class . ':create');
+    	$this->put('/hello/{id}', HelloController::class . ':update');
+    	$this->delete('/hello/{id}', HelloController::class . ':delete');
 
-    	$this->get('/hello/{name}', HelloController::class . ':index');
-    	$this->post('/hello/{name}', HelloController::class . ':index');
-    	
     })->add(new \Api\Core\Middleware\Auth\AuthMiddleware());
      
 });
