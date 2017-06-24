@@ -17,7 +17,7 @@ abstract class ControllerAbstract
      *
      * @param $app
      */
-    public function __construct($app)
+    protected function __construct($app)
     {
         $sanitizer = new SanitizationAdapter();
 
@@ -46,4 +46,25 @@ abstract class ControllerAbstract
         $this->arrRequestBody = $sanitizer->sanitize($this->arrRequestBody);
     }
 
+
+    /**
+     * Structure response data.
+     *
+     * @param $arrData
+     * @param array $arrPagination
+     * @return array
+     */
+    protected function structureResponseData($arrData, $arrPagination = [])
+    {
+        $arrReturn = [
+            'data' => $arrData
+        ];
+
+        if(!empty($arrPagination))
+        {
+            $arrReturn['paginate'] = $arrPagination;
+        }
+
+        return $arrReturn;
+    }
 }

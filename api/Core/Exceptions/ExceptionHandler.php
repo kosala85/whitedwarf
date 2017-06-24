@@ -83,7 +83,7 @@ class ExceptionHandler
         $exceptionDetails['line'] = $this->exception->getLine();
         $exceptionDetails['file'] = $this->exception->getFile();
 
-        return $exceptionDetails;
+        return ['error' => $exceptionDetails];
     }
 
 
