@@ -134,7 +134,7 @@ class UserRepository extends RepositoryAbstract
      */
     public function selectUserByCredentials($arrCredentials)
     {
-        $strQuery = "SELECT id, type, status 
+        $strQuery = "SELECT id, name, type, status 
                      FROM " . User::TABLE . " 
                      WHERE email = :email 
                         AND password = PASSWORD(:password) 

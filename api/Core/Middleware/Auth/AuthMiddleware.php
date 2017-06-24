@@ -20,13 +20,9 @@ class AuthMiddleware
     {
         // inbound manipulations
 
-        // use this when sending the token as a query parameter
-        // $arrQueryParams = $request->getQueryParams();
-        // $strToken = isset($arrQueryParams['token']) ? $arrQueryParams['token'] : '';
-
-        // use this when sending the token in the request header
         $strToken = '';
 
+        // by default check whether the token is sent in the request header
         if($request->hasHeader('Authorization'))
         {
             $arrToken = explode(' ', $request->getHeader('Authorization')[0]);
@@ -42,6 +38,12 @@ class AuthMiddleware
             }
 
             $strToken = $arrToken[1];
+        }
+        else
+        {
+            // otherwise check to see whether the token is sent in the request query
+             $arrQueryParams = $request->getQueryParams();
+             $strToken = isset($arrQueryParams['token']) ? $arrQueryParams['token'] : '';
         }
 
         $authenticator = $GLOBALS['auth'];
