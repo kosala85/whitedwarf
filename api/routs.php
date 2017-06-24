@@ -9,11 +9,14 @@ $app->group('/v1', function()
 {
     // login to the api
     $this->post('/auth/login', AuthController::class . ':login');
-
+    
     // authenticated routs
     $this->group('', function()
     {
-    	// hello routs
+        // get permissions
+        $this->get('/auth/permission', AuthController::class . ':getPermission');
+
+        // hello routs
     	$this->get('/hello', HelloController::class . ':index');
     	$this->get('/hello/{id}', HelloController::class . ':getById');
     	$this->post('/hello', HelloController::class . ':create');

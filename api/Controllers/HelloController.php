@@ -29,7 +29,7 @@ class HelloController extends ControllerAbstract
 
         $data = $this->hello->getHelloList($this->arrRequestParams['filters']);
 
-        return $response->withJson($data, ResponseCodeEnum::HTTP_OK);
+        return $response->withJson($this->structureResponseData($data), ResponseCodeEnum::HTTP_OK);
 	}
 
 
@@ -39,7 +39,7 @@ class HelloController extends ControllerAbstract
 
         $data = $this->hello->getHello($intId);
 
-        return $response->withJson($data, ResponseCodeEnum::HTTP_OK);
+        return $response->withJson($this->structureResponseData($data), ResponseCodeEnum::HTTP_OK);
     }
 
 

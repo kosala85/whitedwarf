@@ -116,6 +116,7 @@ class JWTAdapter
             "data" => [
                 "user" => [
                     "id" => $arrUser['id'],
+                    'name' => $arrUser['name'],
                     "type" => $arrUser['type'],
                 ],
             ],

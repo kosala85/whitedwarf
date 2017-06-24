@@ -41,6 +41,36 @@ class AuthController extends ControllerAbstract
 
 	    $arrData = ['token' => $strToken];
 
-        return $response->withJson($arrData, ResponseCodeEnum::HTTP_OK);
+        return $response->withJson($this->structureResponseData($arrData), ResponseCodeEnum::HTTP_OK);
 	}
+
+
+    /**
+     * Get permissions.
+     *  (NOTE: Use static permissions for now. For dynamic permissions use a role permission module)
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+	public function getPermission(Request $request, Response $response)
+    {
+        $arrPermissions = [
+            'default' => 'main',
+            'routs' => [
+                [
+                    'group' => 'User Management',
+                    'modules' => [
+                        [
+                            "name" => "User Actions",
+                            "route" => "action",
+                            "action" => ["add", "edit"]
+                        ]
+                    ]
+                ],
+            ],
+        ];
+
+
+        return $response->withJson($this->structureResponseData($arrPermissions), ResponseCodeEnum::HTTP_OK);
+    }
 }

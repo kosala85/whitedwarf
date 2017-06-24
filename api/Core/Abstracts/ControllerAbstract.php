@@ -2,6 +2,8 @@
 
 namespace Api\Core\Abstracts;
 
+use Api\Core\Adapters\Sanitization\SanitizationAdapter;
+
 abstract class ControllerAbstract
 {
     protected $arrRequestParams = [];
@@ -15,8 +17,10 @@ abstract class ControllerAbstract
      *
      * @param $app
      */
-    public function __construct($app)
+    protected function __construct($app)
     {
+        $sanitizer = new SanitizationAdapter();
+
         $request = $app->get('request');
 
         // get a reference to the session
@@ -36,6 +40,31 @@ abstract class ControllerAbstract
 
         // assign request body in to a class variable as an associative array
         $this->arrRequestBody = $request->getParsedBody();
+
+        // sanitize input
+        $this->arrRequestParams = $sanitizer->sanitize($this->arrRequestParams);
+        $this->arrRequestBody = $sanitizer->sanitize($this->arrRequestBody);
     }
 
+
+    /**
+     * Structure response data.
+     *
+     * @param $arrData
+     * @param array $arrPagination
+     * @return array
+     */
+    protected function structureResponseData($arrData, $arrPagination = [])
+    {
+        $arrReturn = [
+            'data' => $arrData
+        ];
+
+        if(!empty($arrPagination))
+        {
+            $arrReturn['paginate'] = $arrPagination;
+        }
+
+        return $arrReturn;
+    }
 }

@@ -20,6 +20,12 @@ class HelloLogic extends LogicAbstract
 
 	public function getHelloList($arrFilter)
 	{
+	    return $this->helloRepository->selectHello($arrFilter);
+	}
+
+
+    public function createHello($arrFilter)
+    {
         $this->db->transBegin();
 
         try
@@ -36,5 +42,5 @@ class HelloLogic extends LogicAbstract
 
             throw $e;
         }
-	}
+    }
 }
