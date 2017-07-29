@@ -2,8 +2,6 @@
 
 use Api\Controllers\HelloController;
 use Api\Controllers\AuthController;
-use Api\Controllers\BookingController;
-
 
 $app->group('/v1', function()
 {

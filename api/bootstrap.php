@@ -15,7 +15,7 @@ $container = $app->getContainer();
 // add the database adapter to the container
 $container['databaseAdapter'] = function($container)
 {
-  return new \Api\Core\Adapters\DB\MySQLAdapter($container->get('settings')['db']);
+  return new \Data\Core\Adapters\DB\MySQL\MySQLAdapter($container->get('settings')['db']);
 };
 
 // add the validation adapter to the container
