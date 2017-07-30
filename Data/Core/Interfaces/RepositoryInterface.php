@@ -1,14 +1,9 @@
 <?php
 
-namespace Data\Repositories;
+namespace Data\Core\Interfaces;
 
-use Data\Core\Abstracts\RepositoryAbstract;
-use Data\Core\Interfaces\RepositoryInterface;
-use Data\Models\User;
-
-class UserRepository extends RepositoryAbstract implements RepositoryInterface
+interface RepositoryInterface
 {
-
     /**
      * Select that can be manipulated using a filters array.
      *
@@ -16,10 +11,7 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      *                          [ <string>'field', <integer>1 (operator), <mixed>'value' ]]
      * @return array
      */
-    public function select($arrFilters = [])
-    {
-        // TODO: Implement select() method.
-    }
+    public function select($arrFilters = []);
 
 
     /**
@@ -28,10 +20,7 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      * @param $intId
      * @return array
      */
-    public function selectItem($intId)
-    {
-        // TODO: Implement selectItem() method.
-    }
+    public function selectItem($intId);
 
 
     /**
@@ -44,10 +33,7 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
      */
-    public function selectBy($arrWhere = [], $arrOrder = [], $arrLimit = [], $arrColumns = [])
-    {
-        // TODO: Implement selectBy() method.
-    }
+    public function selectBy($arrWhere = [], $arrOrder = [], $arrLimit = [], $arrColumns = []);
 
 
     /**
@@ -57,10 +43,7 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @return integer
      */
-    public function count($arrWhere = [])
-    {
-        // TODO: Implement count() method.
-    }
+    public function count($arrWhere = []);
 
 
     /**
@@ -71,10 +54,7 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      * @param $arrRecord ['column_1' = > value_1, 'column_2' => value_2, ...]
      * @return array
      */
-    public function insert($arrRecord)
-    {
-        // TODO: Implement insert() method.
-    }
+    public function insert($arrRecord);
 
 
     /**
@@ -84,34 +64,5 @@ class UserRepository extends RepositoryAbstract implements RepositoryInterface
      * @param $arrSet ['column_1' => value_1, 'column_2' => value_2, ...]
      * @return array
      */
-    public function update($intId, $arrSet)
-    {
-        // TODO: Implement update() method.
-    }
-
-
-// ___________________________________________________________________________________________ additional repo functions
-
-    /**
-     * Select a user by login credentials.
-     *
-     * @param $arrCredentials
-     * @return mixed
-     */
-    public function selectUserByCredentials($arrCredentials)
-    {
-        $strQuery = "SELECT id, name, type, status 
-                     FROM " . User::TABLE . " 
-                     WHERE email = :email 
-                        AND password = PASSWORD(:password) 
-                     LIMIT 1";
-
-        $arrValues = [
-            ':email' => $arrCredentials['email'],
-            ':password' => $arrCredentials['password'],
-        ];
-
-        return $this->db->query($strQuery, $arrValues);
-    }
-
+    public function update($intId, $arrSet);
 }
