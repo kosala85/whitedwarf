@@ -4,9 +4,10 @@ namespace Data\Core\Adapters\DB\MySQL;
 
 use \PDO;
 use Data\Core\Abstracts\DBAdapterAbstract;
+use Data\Core\Interfaces\DBAdapterInterface;
 use Data\Core\Exceptions\Types\DataException;
 
-class MySQLAdapter extends DBAdapterAbstract
+class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 {
     const QUERY_TYPE_SELECT = 'S';
     const QUERY_TYPE_INSERT = 'I';
