@@ -1,8 +1,8 @@
 <?php
 
-namespace Api\Logic\Hello;
+namespace Domain\Logic\Hello;
 
-use Api\Core\Exceptions\Types\LogicalException;
+use Domain\Core\Exceptions\Types\LogicalException;
 
 class HelloException extends LogicalException
 {

@@ -4,8 +4,8 @@ namespace Api\Core\Adapters\Auth;
 
 use Firebase\JWT\JWT;
 
-use Api\Data\Repositories\UserRepository;
-use Api\Data\Models\User;
+use Data\Repositories\UserRepository;
+use Data\Models\User;
 
 class JWTAdapter
 {

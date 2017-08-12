@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Abstracts;
+namespace Data\Core\Abstracts;
 
 abstract class RepositoryAbstract
 {
