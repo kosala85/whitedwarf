@@ -1,10 +1,10 @@
 <?php
 
-namespace Api\Data\Models;
+namespace Data\Models;
 
-class Hello
+class User
 {
-	const TABLE = 'hello';
+	const TABLE = 'user';
 
 	const STATUS_ACTIVE = 'A';
 	const STATUS_INACTIVE = 'D';

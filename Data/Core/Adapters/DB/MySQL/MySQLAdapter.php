@@ -1,12 +1,13 @@
 <?php
 
-namespace Api\Core\Adapters\DB;
+namespace Data\Core\Adapters\DB\MySQL;
 
 use \PDO;
-use Api\Core\Abstracts\DBAdapterAbstract;
-use Api\Core\Exceptions\Types\DataException;
+use Data\Core\Abstracts\DBAdapterAbstract;
+use Data\Core\Interfaces\DBAdapterInterface;
+use Data\Core\Exceptions\Types\DataException;
 
-class MySQLAdapter extends DBAdapterAbstract
+class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 {
     const QUERY_TYPE_SELECT = 'S';
     const QUERY_TYPE_INSERT = 'I';
@@ -125,8 +126,10 @@ class MySQLAdapter extends DBAdapterAbstract
      * COUNT from a table.
      *
      * @param $strTable
-     * @param array $arrWhere
-     * @param array $arrJoins
+     * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
+     *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
+     * @param array $arrJoins [['LEFT JOIN', 'table_1', 'table_1.column', 'other_table.column'],
+     *                         ['JOIN', 'table_2', 'table_2.column', 'other_table.column']]
      * @return int
      */
     public function count($strTable, array $arrWhere = [], array $arrJoins = [])

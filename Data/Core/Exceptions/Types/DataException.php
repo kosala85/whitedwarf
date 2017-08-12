@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Exceptions\Types;
+namespace Data\Core\Exceptions\Types;
 
 class DataException extends \Exception
 {

@@ -6,7 +6,9 @@
     },
     "autoload": {
       "psr-4": {
-        "Api\\": "api"
+        "Api\\": "api",
+        "Domain\\": "Domain",
+        "Data\\": "Data"
       }
     }
 }

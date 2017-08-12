@@ -7,8 +7,9 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use Api\Core\Abstracts\ControllerAbstract;
 use Api\Core\Enums\ResponseCodeEnum;
-use Api\Logic\Hello\HelloLogic;
 use Api\Validations\HelloRules;
+
+use Domain\Logic\Hello\HelloLogic;
 
 class HelloController extends ControllerAbstract
 {
@@ -45,11 +46,11 @@ class HelloController extends ControllerAbstract
 
     public function create(Request $request, Response $response)
     {
-        $name = $request->getAttribute('name');
+//        $name = $request->getAttribute('name');
 
-        $this->validator->validate($this->arrRequestBody, HelloRules::SELECT);
+//        $this->validator->validate($this->arrRequestBody, HelloRules::SELECT);
 
-        $data = $this->hello->createHello($arrHello);
+        $data = $this->hello->createHello([]);
 
         return $response->withJson($data, ResponseCodeEnum::HTTP_CREATED);
     }

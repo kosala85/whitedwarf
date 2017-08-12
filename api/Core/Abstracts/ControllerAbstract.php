@@ -37,6 +37,10 @@ abstract class ControllerAbstract
         {
             $this->arrRequestParams['filters'] = json_decode($this->arrRequestParams['filters'], true);
         }
+        else
+        {
+            $this->arrRequestParams['filters'] = [];
+        }
 
         // assign request body in to a class variable as an associative array
         $this->arrRequestBody = $request->getParsedBody();

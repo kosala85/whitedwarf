@@ -10,11 +10,11 @@ class JsonMiddlewareException extends MiddlewareException
 
     public static function unknown($exception)
     {
-        throw new AuthMiddlewareException("Json Middleware Exception: " . $exception->getMessage(), self::BASE_ERROR_CODE);
+        throw new JsonMiddlewareException("Json Middleware Exception: " . $exception->getMessage(), self::BASE_ERROR_CODE);
     }
 
     public static function notJson()
     {
-        throw new AuthMiddlewareException("Api only accepts JSON data", self::BASE_ERROR_CODE + 1);
+        throw new JsonMiddlewareException("Api only accepts JSON data", self::BASE_ERROR_CODE + 1);
     }
 }
