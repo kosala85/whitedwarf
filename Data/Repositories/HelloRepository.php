@@ -16,6 +16,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      * @param array $arrFilters [[ <string>'field', <integer>1 (operator), <mixed>'value' ]
      *                          [ <string>'field', <integer>1 (operator), <mixed>'value' ]]
      * @return array
+     * @throws \Exception
      */
     public function select($arrFilters = [])
     {
@@ -78,6 +79,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      *
      * @param $intId
      * @return array
+     * @throws \Exception
      */
     public function selectItem($intId)
     {
@@ -112,6 +114,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      * @param array $arrLimit [offset, limit]
      * @param array $arrColumns ['column_1', 'column_2', ...]
      * @return array
+     * @throws \Exception
      */
     public function selectBy($arrWhere = [], $arrOrder = [], $arrLimit = [], $arrColumns = [])
     {
@@ -125,6 +128,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
      * @return integer
+     * @throws \Exception
      */
     public function count($arrWhere = [])
     {
@@ -139,6 +143,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      *
      * @param $arrRecord ['column_1' = > value_1, 'column_2' => value_2, ...]
      * @return array
+     * @throws \Exception
      */
     public function insert($arrRecord)
     {
@@ -152,6 +157,7 @@ class HelloRepository extends RepositoryAbstract implements RepositoryInterface
      * @param $intId
      * @param $arrSet ['column_1' => value_1, 'column_2' => value_2, ...]
      * @return array
+     * @throws \Exception
      */
     public function update($intId, $arrSet)
     {

@@ -14,8 +14,6 @@ abstract class LogicAbstract
     public function __construct()
     {
         // get a reference to DatabaseAdapter
-        // (NOTE: only use the db object to manage transactions in the Logic layer and avoid using it to issue database
-        //        queries directly. Do those in the Repository layer.)
         $this->db = $GLOBALS['db'];
         
         // get a reference to the session
@@ -24,7 +22,7 @@ abstract class LogicAbstract
 
 
     /**
-     * To give the domain access to db instance but to limit its ability to that of only managing transactions.
+     * To give the Logic object access to db instance but to limit its ability to that of only managing transactions.
      *
      * @param $function
      * @return mixed

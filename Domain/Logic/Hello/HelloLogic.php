@@ -20,7 +20,7 @@ class HelloLogic extends LogicAbstract
 
 	public function getHelloList($arrFilter)
 	{
-	    return $this->helloRepository->selectHello($arrFilter);
+	    return $this->helloRepository->select($arrFilter);
 	}
 
 
@@ -28,7 +28,7 @@ class HelloLogic extends LogicAbstract
     {
         return $this->wrapInTransaction(function() use($arrFilter)
         {
-            return $this->helloRepository->selectHello($arrFilter);
+            return $this->helloRepository->select($arrFilter);
         });
     }
 }
