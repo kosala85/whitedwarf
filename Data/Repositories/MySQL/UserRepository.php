@@ -1,6 +1,6 @@
 <?php
 
-namespace Data\Repositories;
+namespace Data\Repositories\MySQL;
 
 use Data\Repositories\Abstracts\RepositoryAbstract;
 use Data\Repositories\Interfaces\RepositoryInterface;

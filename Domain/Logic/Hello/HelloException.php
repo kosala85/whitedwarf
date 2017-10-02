@@ -2,7 +2,7 @@
 
 namespace Domain\Logic\Hello;
 
-use Domain\Core\Exceptions\Types\LogicalException;
+use Domain\Exceptions\Types\LogicalException;
 
 class HelloException extends LogicalException
 {

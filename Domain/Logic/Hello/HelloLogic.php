@@ -2,8 +2,8 @@
 
 namespace Domain\Logic\Hello;
 
-use Domain\Core\Abstracts\LogicAbstract;
-use Data\Repositories\HelloRepository;
+use Domain\Abstracts\LogicAbstract;
+use Data\Repositories\MySQL\HelloRepository;
 
 class HelloLogic extends LogicAbstract
 {

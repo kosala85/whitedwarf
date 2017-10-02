@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Core\Abstracts;
+namespace Domain\Abstracts;
 
 abstract class LogicAbstract
 {
