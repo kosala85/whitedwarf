@@ -2,8 +2,8 @@
 
 namespace Data\Repositories;
 
-use Data\Core\Abstracts\RepositoryAbstract;
-use Data\Core\Interfaces\RepositoryInterface;
+use Data\Repositories\Abstracts\RepositoryAbstract;
+use Data\Repositories\Interfaces\RepositoryInterface;
 use Data\Models\Hello;
 use Data\Models\User;
 

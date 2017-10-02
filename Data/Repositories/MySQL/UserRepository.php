@@ -1,9 +1,15 @@
 <?php
 
-namespace Data\Core\Interfaces;
+namespace Data\Repositories;
 
-interface RepositoryInterface
+use Data\Repositories\Abstracts\RepositoryAbstract;
+use Data\Repositories\Interfaces\RepositoryInterface;
+use Data\Exceptions\Types\NotImplementedException;
+use Data\Models\User;
+
+class UserRepository extends RepositoryAbstract implements RepositoryInterface
 {
+
     /**
      * Select that can be manipulated using a filters array.
      *
@@ -12,7 +18,10 @@ interface RepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public function select($arrFilters = []);
+    public function select($arrFilters = [])
+    {
+        throw new NotImplementedException();
+    }
 
 
     /**
@@ -22,7 +31,10 @@ interface RepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public function selectItem($intId);
+    public function selectItem($intId)
+    {
+        throw new NotImplementedException();
+    }
 
 
     /**
@@ -36,7 +48,10 @@ interface RepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public function selectBy($arrWhere = [], $arrOrder = [], $arrLimit = [], $arrColumns = []);
+    public function selectBy($arrWhere = [], $arrOrder = [], $arrLimit = [], $arrColumns = [])
+    {
+        throw new NotImplementedException();
+    }
 
 
     /**
@@ -44,10 +59,13 @@ interface RepositoryInterface
      *
      * @param array $arrWhere [['column_1', '=', 'value'],['column_2', '=', 'value', 'OR'],['column_2', 'LIKE', '%value%'],
      *                         ['column_2', 'IN', [1, 2, 3]],['column_2', 'BETWEEN', [value_1, value_2]]]
-     * @return integer
+     * @return int
      * @throws \Exception
      */
-    public function count($arrWhere = []);
+    public function count($arrWhere = [])
+    {
+        throw new NotImplementedException();
+    }
 
 
     /**
@@ -59,7 +77,10 @@ interface RepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public function insert($arrRecord);
+    public function insert($arrRecord)
+    {
+        throw new NotImplementedException();
+    }
 
 
     /**
@@ -70,5 +91,35 @@ interface RepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public function update($intId, $arrSet);
+    public function update($intId, $arrSet)
+    {
+        throw new NotImplementedException();
+    }
+
+
+// ___________________________________________________________________________________________ additional repo functions
+
+    /**
+     * Select a user by login credentials.
+     *
+     * @param $arrCredentials
+     * @return mixed
+     * @throws \Exception
+     */
+    public function selectUserByCredentials($arrCredentials)
+    {
+        $strQuery = "SELECT id, name, type, status 
+                     FROM " . User::TABLE . " 
+                     WHERE email = :email 
+                        AND password = PASSWORD(:password) 
+                     LIMIT 1";
+
+        $arrValues = [
+            ':email' => $arrCredentials['email'],
+            ':password' => $arrCredentials['password'],
+        ];
+
+        return $this->db->query($strQuery, $arrValues);
+    }
+
 }

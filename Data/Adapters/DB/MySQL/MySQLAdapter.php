@@ -1,10 +1,10 @@
 <?php
 
-namespace Data\Core\Adapters\DB\MySQL;
+namespace Data\Adapters\DB\MySQL;
 
 use \PDO;
-use Data\Core\Abstracts\DBAdapterAbstract;
-use Data\Core\Interfaces\DBAdapterInterface;
+use Data\Adapters\DB\Abstracts\DBAdapterAbstract;
+use Data\Adapters\DB\Interfaces\DBAdapterInterface;
 use Data\Core\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface

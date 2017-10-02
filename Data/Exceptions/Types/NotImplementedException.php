@@ -1,6 +1,6 @@
 <?php
 
-namespace Data\Core\Exceptions\Types;
+namespace Data\Exceptions\Types;
 
 class NotImplementedException extends \Exception
 {
