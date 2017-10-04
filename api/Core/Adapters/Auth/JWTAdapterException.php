@@ -18,15 +18,7 @@ class JWTAdapterException extends AuthException
         throw new JWTAdapterException("Positive integer is not provided for token lifetime", self::BASE_ERROR_CODE + 1);
     }
 
-    public static function noUser()
-    {
-        throw new JWTAdapterException("Username Password mismatch", self::BASE_ERROR_CODE + 2);
-    }
 
-    public static function inactiveUser()
-    {
-        throw new JWTAdapterException("User is inactive", self::BASE_ERROR_CODE + 2);
-    }
 
     public static function noToken()
     {

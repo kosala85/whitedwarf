@@ -4,9 +4,6 @@ namespace Api\Core\Adapters\Auth;
 
 use Firebase\JWT\JWT;
 
-use Data\Repositories\MySQL\UserRepository;
-use Data\Models\User;
-
 class JWTAdapter
 {
     private $strSecretKey;
@@ -64,7 +61,6 @@ class JWTAdapter
             JWTAdapterException::tokenExpired();
         }
 
-
         // add user to the session
         $GLOBALS['session']->user = $token->data->user;
 
@@ -73,38 +69,13 @@ class JWTAdapter
 
 
     /**
-     * Check the database for a user matching provided credentials and create an authentication token.
+     * Create a token.
      *
-     * @param $strEmail
-     * @param $strPassword
+     * @param $arrUser
      * @return string
      */
-	public function createToken($strEmail, $strPassword)
+	public function createToken($arrUser)
 	{
-		$userRepository = new UserRepository();
-
-        $arrCredentials = [
-            'email' => $strEmail,
-            'password' => $strPassword,
-        ];
-
-        $arrUser = $userRepository->selectUserByCredentials($arrCredentials);
-
-        // check whether there is a user
-        if(empty($arrUser))
-        {
-            JWTAdapterException::noUser();
-        }
-
-        // get first row since the return array always is a collection of rows
-        $arrUser = $arrUser[0];
-
-        // check whether user is active
-        if($arrUser['status'] !== User::STATUS_ACTIVE)
-        {
-            JWTAdapterException::inactiveUser();
-        }
-
         $intTime = time();
 
         // create token            

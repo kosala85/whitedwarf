@@ -1,8 +1,8 @@
 <?php
 
-namespace Data\Adapters\DB\MySQL;
+namespace Api\Core\Adapters\DB\MySQL;
 
-use Data\Exceptions\Types\DataException;
+use Api\Core\Adapters\DB\Exceptions\Types\DataException;
 
 class MySQLAdapterException extends DataException
 {

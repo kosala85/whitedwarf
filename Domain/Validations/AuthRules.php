@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Validations;
+namespace Domain\Validations;
 
 class AuthRules
 {

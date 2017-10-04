@@ -1,11 +1,11 @@
 <?php
 
-namespace Data\Adapters\DB\MySQL;
+namespace Api\Core\Adapters\DB\MySQL;
 
 use \PDO;
-use Data\Adapters\DB\Abstracts\DBAdapterAbstract;
-use Data\Adapters\DB\Interfaces\DBAdapterInterface;
-use Data\Core\Exceptions\Types\DataException;
+use Api\Core\Adapters\DB\Abstracts\DBAdapterAbstract;
+use Api\Core\Adapters\DB\Interfaces\DBAdapterInterface;
+use Api\Core\Adapters\DB\Exceptions\Types\DataException;
 
 class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 {
@@ -27,7 +27,6 @@ class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 
 
 // _______________________________________________________________________________________________________ magic methods
-
 
     /**
      * MySQLAdapter constructor.
@@ -67,7 +66,6 @@ class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 
 
 // ______________________________________________________________________________________________________________ public
-
 
     /**
      * SELECT from a table.
@@ -374,7 +372,6 @@ class MySQLAdapter extends DBAdapterAbstract implements DBAdapterInterface
 
 
 // _____________________________________________________________________________________________________________ private
-
 
     /**
      * Generate columns list.

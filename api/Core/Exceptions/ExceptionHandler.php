@@ -3,8 +3,6 @@
 namespace Api\Core\Exceptions;
 
 use Api\Core\Enums\ResponseCodeEnum;
-use Api\Core\Exceptions\Types\DataException;
-use Api\Core\Exceptions\Types\LogicalException;
 use Api\Core\Exceptions\Types\MiddlewareException;
 use Api\Core\Exceptions\Types\ValidationException;
 
@@ -27,7 +25,6 @@ class ExceptionHandler
 
 
 // ______________________________________________________________________________________________________________ public
-
 
     /**
      * Handle error according to error type.
@@ -52,7 +49,6 @@ class ExceptionHandler
 
 
 // _____________________________________________________________________________________________________________ private
-
 
     /**
      * Set HTTP response code depending on the error type.

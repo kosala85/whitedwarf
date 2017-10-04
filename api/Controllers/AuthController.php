@@ -7,7 +7,9 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use Api\Core\Abstracts\ControllerAbstract;
 use Api\Core\Enums\ResponseCodeEnum;
-use Api\Validations\AuthRules;
+
+use Domain\Validations\AuthRules;
+use Domain\Logic\Auth\UserAuthenticator;
 
 class AuthController extends ControllerAbstract
 {
@@ -32,16 +34,22 @@ class AuthController extends ControllerAbstract
     public function login(Request $request, Response $response)
 	{
 	    $authenticator = $GLOBALS['auth'];
+	    $userAuthenticator = new UserAuthenticator();
 
         // validate input data
         $this->validator->validate($this->arrRequestBody, AuthRules::LOGIN);
 
-        // check for authenticity and generate token
-        $strToken = $authenticator->createToken($this->arrRequestBody['email'], $this->arrRequestBody['password']);
+        // check for user authenticity
+        $arrUser = $userAuthenticator->getValidUser($this->arrRequestBody['email'],
+                                                    $this->arrRequestBody['password']);
+
+        // generate token
+        $strToken = $authenticator->createToken($arrUser);
 
 	    $arrData = ['token' => $strToken];
 
-        return $response->withJson($this->structureResponseData($arrData), ResponseCodeEnum::HTTP_OK);
+        return $response->withJson($this->structureResponseData($arrData),
+                                   ResponseCodeEnum::HTTP_OK);
 	}
 
 

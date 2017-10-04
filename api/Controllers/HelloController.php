@@ -7,8 +7,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use Api\Core\Abstracts\ControllerAbstract;
 use Api\Core\Enums\ResponseCodeEnum;
-use Api\Validations\HelloRules;
 
+use Domain\Validations\HelloRules;
 use Domain\Logic\Hello\HelloLogic;
 
 class HelloController extends ControllerAbstract

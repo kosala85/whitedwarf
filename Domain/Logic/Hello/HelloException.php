@@ -6,7 +6,7 @@ use Domain\Exceptions\Types\LogicalException;
 
 class HelloException extends LogicalException
 {
-    const BASE_ERROR_CODE = 1000;
+    const BASE_ERROR_CODE = 20000;
 
     public static function unknown()
     {
