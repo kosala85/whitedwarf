@@ -13,7 +13,7 @@ class JsonMiddleware
      * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response
      * @param  callable $next Next middleware
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws MiddlewareException
+     * @throws JsonMiddlewareException
      */
     public function __invoke($request, $response, $next)
     {

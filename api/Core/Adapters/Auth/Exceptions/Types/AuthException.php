@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Exceptions\Types;
+namespace Api\Core\Adapters\Exceptions\Types;
 
 class AuthException extends \Exception
 {

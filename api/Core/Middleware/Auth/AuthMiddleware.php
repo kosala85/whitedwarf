@@ -2,9 +2,6 @@
 
 namespace Api\Core\Middleware\Auth;
 
-use Api\Core\Exceptions\Types\MiddlewareException;
-use Api\Core\Adapters\Auth\JWTAdapterException;
-
 class AuthMiddleware
 {
     /**
@@ -14,7 +11,7 @@ class AuthMiddleware
      * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response
      * @param  callable $next Next middleware
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws MiddlewareException
+     * @throws AuthMiddlewareException
      */
     public function __invoke($request, $response, $next)
     {
@@ -29,12 +26,12 @@ class AuthMiddleware
             
             if($arrToken[0] != 'Bearer')
             {
-                JWTAdapterException::noBearerToken();
+                AuthMiddlewareException::noBearerToken();
             }
 
             if(!isset($arrToken[1]) || $arrToken[1] == '')
             {
-                JWTAdapterException::noToken();
+                AuthMiddlewareException::noToken();
             }
 
             $strToken = $arrToken[1];

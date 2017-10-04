@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Abstracts;
+namespace Api\Controllers\Abstracts;
 
 use Api\Core\Adapters\Sanitization\SanitizationAdapter;
 

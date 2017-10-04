@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Exceptions\Types;
+namespace Api\Core\Adapters\Validation\Exceptions\Types;
 
 class ValidationException extends \Exception
 {

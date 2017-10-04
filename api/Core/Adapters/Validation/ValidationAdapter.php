@@ -3,7 +3,7 @@
 namespace Api\Core\Adapters\Validation;
 
 use JsonSchema\Validator;
-use Api\Core\Exceptions\Types\ValidationException;
+use Api\Core\Adapters\Validation\Exceptions\Types\ValidationException;
 
 class ValidationAdapter
 {

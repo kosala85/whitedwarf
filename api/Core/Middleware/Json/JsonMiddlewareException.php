@@ -2,7 +2,7 @@
 
 namespace Api\Core\Middleware\Json;
 
-use Api\Core\Exceptions\Types\MiddlewareException;
+use Api\Core\Middleware\Exceptions\Types\MiddlewareException;
 
 class JsonMiddlewareException extends MiddlewareException
 {

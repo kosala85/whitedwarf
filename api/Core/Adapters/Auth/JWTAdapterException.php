@@ -2,7 +2,7 @@
 
 namespace Api\Core\Adapters\Auth;
 
-use Api\Core\Exceptions\Types\AuthException;
+use Api\Core\Adapters\Exceptions\Types\AuthException;
 
 class JWTAdapterException extends AuthException
 {
@@ -17,8 +17,6 @@ class JWTAdapterException extends AuthException
     {
         throw new JWTAdapterException("Positive integer is not provided for token lifetime", self::BASE_ERROR_CODE + 1);
     }
-
-
 
     public static function noToken()
     {

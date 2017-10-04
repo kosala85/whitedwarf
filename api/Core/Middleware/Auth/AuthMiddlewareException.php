@@ -1,8 +1,8 @@
 <?php
 
-namespace Api\Core\Middleware\Json;
+namespace Api\Core\Middleware\Auth;
 
-use Api\Core\Exceptions\Types\MiddlewareException;
+use Api\Core\Middleware\Exceptions\Types\MiddlewareException;
 
 class AuthMiddlewareException extends MiddlewareException
 {
