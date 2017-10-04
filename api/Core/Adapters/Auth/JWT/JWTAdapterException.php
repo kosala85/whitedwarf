@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Adapters\Auth;
+namespace Api\Core\Adapters\Auth\JWT;
 
 use Api\Core\Adapters\Exceptions\Types\AuthException;
 

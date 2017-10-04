@@ -27,7 +27,7 @@ $container['validationAdapter'] = function()
 // add the authentication adapter to the container
 $container['authAdapter'] = function($container)
 {
-  return new \Api\Core\Adapters\Auth\JWTAdapter($container->get('settings')['auth']);
+  return new \Api\Core\Adapters\Auth\JWT\JWTAdapter($container->get('settings')['auth']);
 };
 
 // add exception handler to the container
@@ -59,7 +59,7 @@ $GLOBALS['session'] = (object)[
 
 // add middleware (NOTE: Last-In-First-Out order)
 //  Check for and set application/json header
-$app->add(new \Api\Core\Middleware\Json\JsonMiddleware());
+$app->add(new \Api\Middleware\Json\JsonMiddleware());
 
 // call on routs
 require(__DIR__ . '/routs.php');

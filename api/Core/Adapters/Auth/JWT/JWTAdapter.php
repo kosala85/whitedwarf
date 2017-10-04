@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Adapters\Auth;
+namespace Api\Core\Adapters\Auth\JWT;
 
 use Firebase\JWT\JWT;
 

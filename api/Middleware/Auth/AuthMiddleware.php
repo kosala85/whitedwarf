@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Middleware\Auth;
+namespace Api\Middleware\Auth;
 
 class AuthMiddleware
 {

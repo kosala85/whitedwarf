@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Core\Middleware\Json;
+namespace Api\Middleware\Json;
 
 class JsonMiddleware
 {
