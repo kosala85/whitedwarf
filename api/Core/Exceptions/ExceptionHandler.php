@@ -3,8 +3,7 @@
 namespace Api\Core\Exceptions;
 
 use Api\Core\Enums\ResponseCodeEnum;
-use Api\Core\Exceptions\Types\MiddlewareException;
-use Api\Core\Exceptions\Types\ValidationException;
+use Api\Core\Adapters\Validation\Exceptions\Types\ValidationException;
 
 class ExceptionHandler
 {
